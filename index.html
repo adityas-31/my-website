@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,279 +9,168 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --red:    #dc2626;
-      --red-lt: #fef2f2;
-      --blue:   #2563eb;
-      --black:  #0f0f0f;
-      --gray:   #6b7280;
-      --light:  #f9fafb;
-      --border: #e5e7eb;
-      --white:  #ffffff;
+      --red:  #dc2626;
+      --blue: #3b82f6;
+    }
+    [data-theme="dark"] {
+      --bg:      #0a0a0a;
+      --bg2:     #111111;
+      --bg3:     #1a1a1a;
+      --text:    #e5e5e5;
+      --text2:   #a3a3a3;
+      --border:  #222222;
+      --border2: #333333;
+      --btn-bg:  #e5e5e5;
+      --btn-fg:  #0a0a0a;
+    }
+    [data-theme="light"] {
+      --bg:      #ffffff;
+      --bg2:     #f9fafb;
+      --bg3:     #f3f4f6;
+      --text:    #0f0f0f;
+      --text2:   #6b7280;
+      --border:  #e5e7eb;
+      --border2: #d1d5db;
+      --btn-bg:  #0f0f0f;
+      --btn-fg:  #ffffff;
     }
 
     html { scroll-behavior: smooth; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      color: var(--black);
-      background: var(--white);
-      font-size: 16px;
-      line-height: 1.6;
+      color: var(--text); background: var(--bg);
+      font-size: 16px; line-height: 1.6;
+      transition: background 0.2s, color 0.2s;
     }
 
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(8px);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 56px;
+      padding: 0 24px; height: 56px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .nav-name {
-      font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em;
-      color: var(--black); text-decoration: none;
-    }
+    .nav-left { display: flex; align-items: center; gap: 32px; }
+    .nav-name { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
     .nav-name span { color: var(--red); }
     .nav-links { display: flex; gap: 28px; list-style: none; }
-    .nav-links a {
-      font-size: 0.85rem; color: var(--gray); text-decoration: none;
-      transition: color 0.15s;
+    .nav-links a { font-size: 0.85rem; color: var(--text2); text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .theme-btn {
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text2); cursor: pointer; border-radius: 6px;
+      padding: 5px 10px; font-size: 0.8rem; transition: all 0.15s; line-height: 1;
     }
-    .nav-links a:hover { color: var(--black); }
+    .theme-btn:hover { color: var(--text); border-color: var(--border2); }
     .nav-toggle {
       display: none; background: none; border: none; cursor: pointer;
       flex-direction: column; gap: 5px; padding: 4px;
     }
-    .nav-toggle span {
-      display: block; width: 22px; height: 2px;
-      background: var(--black); transition: all 0.2s;
-    }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); transition: all 0.2s; }
 
     /* ── LAYOUT ── */
     section { padding: 80px 24px; max-width: 860px; margin: 0 auto; }
     section + section { padding-top: 60px; }
-
     h2 {
       font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em;
-      margin-bottom: 32px; color: var(--black);
+      margin-bottom: 32px; color: var(--text);
       display: flex; align-items: center; gap: 10px;
     }
-    h2::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
+    h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     /* ── HERO ── */
-    #hero {
-      padding-top: 140px; padding-bottom: 80px;
-      max-width: 860px; margin: 0 auto;
-    }
-    .hero-label {
-      display: inline-block; font-size: 0.75rem; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--red); margin-bottom: 16px;
-    }
+    #hero { padding-top: 140px; padding-bottom: 80px; max-width: 860px; margin: 0 auto; }
     .hero-name {
       font-size: clamp(2.4rem, 6vw, 3.8rem);
       font-weight: 800; letter-spacing: -0.04em;
-      line-height: 1.1; margin-bottom: 20px;
+      line-height: 1.1; margin-bottom: 20px; color: var(--text);
     }
-    .hero-tagline {
-      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
-      color: var(--black); max-width: 600px;
-      margin-bottom: 12px; line-height: 1.5;
-    }
-    .hero-sub {
-      font-size: 0.875rem; color: var(--gray);
-      max-width: 600px; margin-bottom: 32px;
-      line-height: 1.6;
-    }
-    .hero-location {
-      font-size: 0.8rem; color: var(--gray);
-      margin-bottom: 32px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .hero-location::before {
-      content: '◎'; color: var(--red); font-size: 0.7rem;
-    }
+    .hero-name .dot { color: var(--red); }
+    .hero-tagline { font-size: clamp(1.05rem, 2.5vw, 1.25rem); color: var(--text); max-width: 600px; margin-bottom: 12px; line-height: 1.5; }
+    .hero-sub { font-size: 0.875rem; color: var(--text2); max-width: 600px; margin-bottom: 32px; line-height: 1.6; }
+    .hero-location { font-size: 0.8rem; color: var(--text2); margin-bottom: 32px; display: flex; align-items: center; gap: 6px; }
+    .hero-location::before { content: '◎'; color: var(--red); font-size: 0.7rem; }
     .hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ── BUTTONS ── */
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 9px 18px; border-radius: 6px;
       font-size: 0.85rem; font-weight: 500; text-decoration: none;
       transition: all 0.15s; cursor: pointer; border: none;
     }
-    .btn-primary {
-      background: var(--black); color: var(--white);
-    }
-    .btn-primary:hover { background: #1f1f1f; }
-    .btn-outline {
-      background: transparent; color: var(--black);
-      border: 1px solid var(--border);
-    }
-    .btn-outline:hover { border-color: var(--black); }
-    .btn-red {
-      background: var(--red); color: var(--white);
-    }
+    .btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--border2); }
+    .btn-red { background: var(--red); color: #fff; }
     .btn-red:hover { background: #b91c1c; }
 
     /* ── ABOUT ── */
-    #about p {
-      color: #374151; margin-bottom: 16px; font-size: 0.975rem;
-      max-width: 720px;
-    }
+    #about p { color: var(--text2); margin-bottom: 16px; font-size: 0.975rem; max-width: 720px; }
     #about p:last-child { margin-bottom: 0; }
 
     /* ── WHAT I DO ── */
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-    }
-    .service-card {
-      background: var(--light); border-radius: 10px;
-      padding: 24px; border: 1px solid var(--border);
-      transition: border-color 0.15s;
-    }
-    .service-card:hover { border-color: #d1d5db; }
+    .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .service-card { background: var(--bg2); border-radius: 10px; padding: 24px; border: 1px solid var(--border); transition: border-color 0.15s; }
+    .service-card:hover { border-color: var(--border2); }
     .service-icon {
-      width: 36px; height: 36px; border-radius: 8px;
-      background: var(--red-lt); color: var(--red);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; margin-bottom: 14px;
+      width: 34px; height: 34px; border-radius: 8px;
+      background: color-mix(in srgb, var(--red) 15%, var(--bg3));
+      color: var(--red); display: flex; align-items: center;
+      justify-content: center; font-size: 1rem; margin-bottom: 14px;
     }
-    .service-card h3 {
-      font-size: 0.95rem; font-weight: 700;
-      margin-bottom: 8px; letter-spacing: -0.01em;
-    }
-    .service-card p {
-      font-size: 0.8rem; color: var(--gray); line-height: 1.6;
-    }
+    .service-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--text); letter-spacing: -0.01em; }
+    .service-card p { font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
 
     /* ── EXPERIENCE ── */
-    .exp-item { margin-bottom: 40px; position: relative; }
+    .exp-item { margin-bottom: 40px; }
     .exp-item:last-child { margin-bottom: 0; }
-    .exp-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      flex-wrap: wrap; gap: 8px; margin-bottom: 4px;
-    }
-    .exp-company { font-weight: 700; font-size: 1rem; }
-    .exp-period {
-      font-size: 0.78rem; color: var(--gray);
-      background: var(--light); padding: 3px 10px;
-      border-radius: 20px; border: 1px solid var(--border);
-      white-space: nowrap;
-    }
+    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .exp-company { font-weight: 700; font-size: 1rem; color: var(--text); }
+    .exp-period { font-size: 0.78rem; color: var(--text2); background: var(--bg3); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); white-space: nowrap; }
     .exp-role { font-size: 0.875rem; color: var(--red); margin-bottom: 12px; font-weight: 500; }
-    .exp-desc { font-size: 0.875rem; color: #374151; margin-bottom: 14px; }
-    .exp-highlights {
-      list-style: none; display: flex; flex-direction: column; gap: 6px;
-    }
-    .exp-highlights li {
-      font-size: 0.85rem; color: #374151;
-      display: flex; align-items: flex-start; gap: 8px;
-    }
-    .exp-highlights li::before {
-      content: '→'; color: var(--red); flex-shrink: 0;
-      font-size: 0.75rem; margin-top: 3px;
-    }
-    .exp-divider {
-      border: none; border-top: 1px solid var(--border);
-      margin: 32px 0;
-    }
+    .exp-desc { font-size: 0.875rem; color: var(--text2); margin-bottom: 14px; }
+    .exp-highlights { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .exp-highlights li { font-size: 0.85rem; color: var(--text2); display: flex; align-items: flex-start; gap: 8px; }
+    .exp-highlights li::before { content: '→'; color: var(--red); flex-shrink: 0; font-size: 0.75rem; margin-top: 3px; }
+    .exp-divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
     /* ── PROJECTS ── */
-    .project-card {
-      border: 1px solid var(--border); border-radius: 12px;
-      padding: 28px; margin-bottom: 20px;
-      transition: border-color 0.15s;
-    }
+    .project-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; transition: border-color 0.15s; }
     .project-card:last-child { margin-bottom: 0; }
-    .project-card:hover { border-color: #9ca3af; }
-    .project-tag {
-      display: inline-block; font-size: 0.7rem; font-weight: 600;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--red); margin-bottom: 10px;
-    }
-    .project-card h3 {
-      font-size: 1.15rem; font-weight: 700;
-      letter-spacing: -0.02em; margin-bottom: 8px;
-    }
-    .project-card p {
-      font-size: 0.875rem; color: #374151;
-      margin-bottom: 14px; line-height: 1.65;
-    }
-    .project-card ul {
-      list-style: none; margin-bottom: 18px;
-    }
-    .project-card ul li {
-      font-size: 0.85rem; color: #374151;
-      display: flex; align-items: flex-start; gap: 8px;
-      margin-bottom: 5px;
-    }
-    .project-card ul li::before {
-      content: '·'; color: var(--red); flex-shrink: 0; font-size: 1.2rem; line-height: 1.2;
-    }
+    .project-card:hover { border-color: var(--border2); }
+    .project-tag { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+    .project-card h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text); }
+    .project-card p { font-size: 0.875rem; color: var(--text2); margin-bottom: 14px; line-height: 1.65; }
+    .project-card ul { list-style: none; margin-bottom: 18px; }
+    .project-card ul li { font-size: 0.85rem; color: var(--text2); display: flex; align-items: flex-start; gap: 8px; margin-bottom: 5px; }
+    .project-card ul li::before { content: '·'; color: var(--red); flex-shrink: 0; font-size: 1.2rem; line-height: 1.2; }
     .project-links { display: flex; gap: 10px; flex-wrap: wrap; }
 
     /* ── SKILLS ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-    }
-    .skill-group {
-      background: var(--light); border-radius: 10px;
-      padding: 20px; border: 1px solid var(--border);
-    }
-    .skill-group h3 {
-      font-size: 0.8rem; font-weight: 700;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      color: var(--red); margin-bottom: 12px;
-    }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .skill-group { background: var(--bg2); border-radius: 10px; padding: 20px; border: 1px solid var(--border); }
+    .skill-group h3 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--red); margin-bottom: 12px; }
     .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .skill-tag {
-      font-size: 0.75rem; padding: 3px 10px;
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 20px; color: #374151;
-    }
+    .skill-tag { font-size: 0.75rem; padding: 3px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; color: var(--text2); }
 
     /* ── MORE ── */
-    #more .card {
-      background: var(--light); border-radius: 12px;
-      padding: 28px; border: 1px solid var(--border);
-    }
-    #more p {
-      font-size: 0.95rem; color: #374151;
-      max-width: 680px; line-height: 1.7;
-    }
+    #more .card { background: var(--bg2); border-radius: 12px; padding: 28px; border: 1px solid var(--border); }
+    #more p { font-size: 0.95rem; color: var(--text2); max-width: 680px; line-height: 1.7; }
 
     /* ── CONTACT ── */
     #contact { padding-bottom: 100px; }
-    .contact-box {
-      border: 1px solid var(--border); border-radius: 12px;
-      padding: 40px; text-align: center;
-    }
-    .contact-box h3 {
-      font-size: 1.6rem; font-weight: 800;
-      letter-spacing: -0.03em; margin-bottom: 10px;
-    }
-    .contact-box p {
-      font-size: 0.9rem; color: var(--gray);
-      margin-bottom: 28px; max-width: 460px; margin-inline: auto;
-    }
-    .contact-links {
-      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-    }
+    .contact-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center; }
+    .contact-box h3 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; color: var(--text); }
+    .contact-box p { font-size: 0.9rem; color: var(--text2); margin-bottom: 28px; max-width: 460px; margin-inline: auto; }
+    .contact-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
     /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 20px 24px;
-      text-align: center;
-      font-size: 0.78rem; color: var(--gray);
-    }
+    footer { border-top: 1px solid var(--border); padding: 20px 24px; text-align: center; font-size: 0.78rem; color: var(--text2); }
 
     /* ── MOBILE ── */
     @media (max-width: 640px) {
@@ -289,45 +178,42 @@
       .nav-links { display: none; flex-direction: column; gap: 0; }
       .nav-links.open {
         display: flex; position: fixed; top: 56px; left: 0; right: 0;
-        background: var(--white); border-bottom: 1px solid var(--border);
-        padding: 8px 0;
+        background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 0;
       }
-      .nav-links.open a {
-        display: block; padding: 12px 24px; font-size: 0.95rem;
-      }
+      .nav-links.open a { display: block; padding: 12px 24px; font-size: 0.95rem; }
       .nav-toggle { display: flex; }
-
       #hero { padding: 120px 16px 60px; }
       section { padding: 60px 16px; }
-      .service-grid { grid-template-columns: 1fr; }
-      .skills-grid  { grid-template-columns: 1fr; }
-      .exp-header   { flex-direction: column; }
-      .contact-box  { padding: 28px 20px; }
+      .service-grid, .skills-grid { grid-template-columns: 1fr; }
+      .exp-header { flex-direction: column; }
+      .contact-box { padding: 28px 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
   <nav>
-    <a href="#hero" class="nav-name">Aditya<span>.</span></a>
-    <ul class="nav-links" id="nav-links">
-      <a href="#about">About</a>
-      <a href="#work">Work</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-      <a href="#contact">Contact</a>
-    </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-left">
+      <a href="#hero" class="nav-name">Aditya<span>.</span></a>
+      <ul class="nav-links" id="nav-links">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">☀</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
-  <!-- HERO -->
   <section id="hero">
-    <span class="hero-label">Available for APAC opportunities</span>
-    <h1 class="hero-name">Aditya Srinivasa</h1>
+    <h1 class="hero-name">Aditya Srinivasa<span class="dot">.</span></h1>
     <p class="hero-tagline">I make complex technology feel inevitable to the people who need to use it.</p>
     <p class="hero-sub">Pre-Sales Specialist · Solutions Engineer · API Security · Observability · Builder of things that probably shouldn't work but do.</p>
     <p class="hero-location">Bengaluru, India</p>
@@ -338,15 +224,13 @@
     </div>
   </section>
 
-  <!-- ABOUT -->
   <section id="about">
     <h2>About</h2>
     <p>I'm a Pre-Sales Specialist who sits at the intersection of engineering and customer outcomes. My job is to take genuinely complex technical platforms — observability stacks, API security products, data pipelines — and make them click for the people evaluating them, buying them, and using them.</p>
-    <p>I've spent the last 3+ years at Rakuten SixthSense doing exactly that across three product lines: Full Stack Observability, Data Observability, and API Security. I've owned 20+ enterprise POCs, influenced $1M+ in pipeline, and at one point built a custom telemetry agent from scratch in under two weeks to save a deal that was about to fall apart.</p>
+    <p>I've spent the last 3+ years doing exactly that across three product lines: Full Stack Observability, Data Observability, and API Security. I've owned 20+ enterprise POCs, influenced $1M+ in pipeline, and at one point built a custom telemetry agent from scratch in under two weeks to save a deal that was about to fall apart.</p>
     <p>I'm not a pure salesperson and I'm not a pure engineer. I'm the person who gets called when the customer is stuck, the demo isn't landing, the integration is broken, or nobody can agree on what the product actually does. I figure it out.</p>
   </section>
 
-  <!-- WHAT I DO -->
   <section id="work">
     <h2>What I Do</h2>
     <div class="service-grid">
@@ -368,7 +252,7 @@
       <div class="service-card">
         <div class="service-icon">📊</div>
         <h3>Data Observability</h3>
-        <p>Pre-sales and technical enablement for enterprise data observability — helping customers monitor the health, quality, and reliability of their data pipelines. Official product documentation at docs.sixthsense.rakuten.com.</p>
+        <p>Pre-sales and technical enablement for enterprise data observability — helping customers monitor the health, quality, and reliability of their data pipelines.</p>
       </div>
       <div class="service-card">
         <div class="service-icon">🤝</div>
@@ -378,15 +262,13 @@
       <div class="service-card">
         <div class="service-icon">📝</div>
         <h3>Technical Documentation</h3>
-        <p>Contributed to and maintained documentation for API Security and Data Observability products using Docusaurus — translating complex concepts into clear, developer-friendly content.</p>
+        <p>Authored and maintained technical documentation for API Security and Data Observability products using Docusaurus — translating complex concepts into clear, developer-friendly content.</p>
       </div>
     </div>
   </section>
 
-  <!-- EXPERIENCE -->
   <section id="experience">
     <h2>Experience</h2>
-
     <div class="exp-item">
       <div class="exp-header">
         <span class="exp-company">Rakuten SixthSense</span>
@@ -403,9 +285,7 @@
         <li>Customers across enterprise, mid-market, and government sectors in India and SEA</li>
       </ul>
     </div>
-
     <hr class="exp-divider">
-
     <div class="exp-item">
       <div class="exp-header">
         <span class="exp-company">Sasken Technologies Ltd.</span>
@@ -416,36 +296,31 @@
     </div>
   </section>
 
-  <!-- PROJECTS -->
   <section id="projects">
     <h2>Projects</h2>
-
     <div class="project-card">
       <span class="project-tag">Personal Project · AI/ML</span>
       <h3>adi-gpt</h3>
       <p>A GPT built from scratch — trained on Metal lyrics instead of Shakespeare. Inspired by Andrej Karpathy's "Let's Build GPT From Scratch" and implemented entirely in Python, adi-gpt is a character-level language model. It's the kind of project that starts as "I want to understand how this actually works" and ends with a model that generates surprisingly aggressive text.</p>
-      <p>The comparison demo shows the model at each stage of the tutorial — from basic bigram to full transformer blocks with attention, residual connections, and layer norm — so you can see exactly how each architectural addition improves the output quality.</p>
+      <p>The comparison demo shows the model at each stage of the build — from basic bigram to full transformer blocks with attention, residual connections, and layer norm — so you can see exactly how each architectural addition improves the output.</p>
       <div class="project-links">
         <a href="https://github.com/adityas-31/adi-gpt" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
         <a href="https://huggingface.co/spaces/adityas-31/adi-gpt" target="_blank" rel="noopener" class="btn btn-red">Live Demo</a>
       </div>
     </div>
-
     <div class="project-card">
-      <span class="project-tag">Rakuten SixthSense · 0→1 Product</span>
+      <span class="project-tag">Personal Project · Infrastructure</span>
       <h3>Enterprise Log Analytics Platform</h3>
-      <p>Owned the product direction and architecture for an enterprise log analytics platform handling ~1,400 logs/sec in production. This wasn't a side project — this was a greenfield build I led from problem definition to GA.</p>
+      <p>Built a log analytics platform from scratch capable of handling ~1,400 logs/sec. Started from first principles — identified the core problem (noisy, overlapping log patterns making logs unreadable at scale), defined what correct output actually looks like, and built toward that.</p>
       <ul>
-        <li>Identified a critical UX failure (noisy, overlapping log patterns) and defined the correctness criteria that fixed it</li>
         <li>Selected a Drain-based template matching architecture after evaluating accuracy vs. recall tradeoffs</li>
-        <li>Enforced multi-tenant isolation, deployment compatibility, and production SLAs before launch</li>
-        <li>Ran 10+ user testing cycles to validate and refine the product</li>
-        <li>Competitive analysis across Datadog, Splunk, Elastic, and Grafana Loki</li>
+        <li>Enforced multi-tenant isolation, deployment compatibility, and production SLAs</li>
+        <li>Ran 10+ testing cycles to validate and refine output quality</li>
+        <li>Benchmarked against Datadog, Splunk, Elastic, and Grafana Loki</li>
       </ul>
     </div>
   </section>
 
-  <!-- SKILLS -->
   <section id="skills">
     <h2>Skills</h2>
     <div class="skills-grid">
@@ -528,7 +403,6 @@
     </div>
   </section>
 
-  <!-- MORE -->
   <section id="more">
     <h2>A Bit More</h2>
     <div class="card">
@@ -540,12 +414,11 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section id="contact">
     <h2>Contact</h2>
     <div class="contact-box">
       <h3>Let's talk.</h3>
-      <p>Open to APAC opportunities in pre-sales, solutions engineering, or anything at the intersection of technical depth and customer outcomes.</p>
+      <p>Pre-sales, solutions engineering, or anything at the intersection of technical depth and customer outcomes.</p>
       <div class="contact-links">
         <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn</a>
         <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
@@ -553,22 +426,30 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
-    <p>Aditya Srinivasa · Bengaluru, India · Last updated April 2026</p>
+    <p>Aditya Srinivasa · Bengaluru, India · April 2026</p>
   </footer>
 
   <script>
-    // mobile nav toggle
+    // theme toggle — persists across visits
+    const html    = document.documentElement;
+    const themBtn = document.getElementById('theme-btn');
+    const saved   = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', saved);
+    themBtn.textContent = saved === 'dark' ? '☀' : '☾';
+
+    themBtn.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      themBtn.textContent = next === 'dark' ? '☀' : '☾';
+    });
+
+    // mobile nav
     const toggle = document.getElementById('nav-toggle');
     const links  = document.getElementById('nav-links');
     toggle.addEventListener('click', () => links.classList.toggle('open'));
-    links.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => links.classList.remove('open'));
-    });
-
-    // adi-gpt demo button — update this href once deployed on Render
-    // document.getElementById('adi-gpt-demo-btn').href = 'https://your-render-url.onrender.com';
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
   </script>
 
 </body>
