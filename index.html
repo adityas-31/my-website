@@ -146,8 +146,8 @@
     .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); transition: all 0.2s; }
 
     /* ── LAYOUT ── */
-    section { padding: 56px 24px; max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
-    section + section { padding-top: 40px; }
+    section { padding: 48px 24px; max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+    section + section { padding-top: 28px; }
     h2 {
       font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em;
       margin-bottom: 32px; color: var(--text);
@@ -156,7 +156,7 @@
     h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     /* ── HERO ── */
-    #hero { padding-top: 100px; padding-bottom: 56px; max-width: 860px; margin: 0 auto; }
+    #hero { padding-top: 100px; padding-bottom: 20px; max-width: 860px; margin: 0 auto; }
     .hero-name {
       font-size: clamp(2.4rem, 6vw, 3.8rem);
       font-weight: 800; letter-spacing: -0.04em;
@@ -168,8 +168,8 @@
       50%       { text-shadow: 0 0 20px rgba(220,38,38,1), 0 0 40px rgba(220,38,38,0.4); }
     }
     .hero-tagline { font-size: clamp(1.05rem, 2.5vw, 1.25rem); color: var(--text); max-width: 600px; margin-bottom: 12px; line-height: 1.5; }
-    .hero-sub { font-size: 0.875rem; color: var(--text2); max-width: 600px; margin-bottom: 32px; line-height: 1.6; }
-    .hero-location { font-size: 0.8rem; color: var(--text2); margin-bottom: 32px; display: flex; align-items: center; gap: 6px; }
+    .hero-sub { font-size: 0.875rem; color: var(--text2); max-width: 600px; margin-bottom: 20px; line-height: 1.6; }
+    .hero-location { font-size: 0.8rem; color: var(--text2); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
     .hero-location::before { content: '◎'; color: var(--red); font-size: 0.7rem; }
     .hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -274,8 +274,8 @@
       }
       .nav-links.open a { display: block; padding: 12px 24px; font-size: 0.95rem; }
       .nav-toggle { display: flex; }
-      #hero { padding: 84px 16px 44px; }
-      section { padding: 44px 16px; }
+      #hero { padding: 84px 16px 16px; }
+      section { padding: 36px 16px; }
       .service-grid, .skills-grid { grid-template-columns: 1fr; }
       .exp-header { flex-direction: column; }
       .contact-box { padding: 28px 20px; }
@@ -296,10 +296,11 @@
       <ul class="nav-links" id="nav-links">
         <a href="#about">About</a>
         <a href="#experience">Experience</a>
-        <a href="#work">Work</a>
+        <a href="#work">What I Do</a>
         <a href="#projects">Projects</a>
         <a href="#skills">Skills</a>
         <a href="#education">Education</a>
+        <a href="#more">More</a>
         <a href="#contact">Contact</a>
       </ul>
     </div>
@@ -319,7 +320,8 @@
     <div class="hero-links">
       <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn</a>
       <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
-      <a href="#contact" class="btn btn-outline">Get in touch</a>
+      <a href="mailto:adityasrinivasa31@gmail.com" class="btn btn-red">Email me</a>
+      <a href="tel:+917619628020" class="btn btn-outline" onclick="handlePhoneClick(event, this)">+91-7619628020</a>
     </div>
   </section>
 
@@ -393,27 +395,27 @@
       <div class="service-card">
         <div class="service-icon">API</div>
         <h3>API Security</h3>
-        <p>Shadow API discovery, zombie API detection, BOLA/IDOR, SQL injection, and the OWASP API Top 10. If you're evaluating API security tooling, I've probably seen your use case before.</p>
+        <p>I run pre-sales for an enterprise API security platform — discovery calls, live demos, POCs, and RFP responses. I've helped customers find shadow APIs they didn't know existed, identify zombie endpoints still receiving traffic, and map their real exposure against the OWASP API Top 10. I built the technical documentation for this product and have worked deals from first call to signed contract across enterprise, government, and regulated industries.</p>
       </div>
       <div class="service-card">
         <div class="service-icon">OBS</div>
         <h3>Full Stack Observability</h3>
-        <p>Three years deploying and demoing enterprise observability stacks — OpenTelemetry, Prometheus, Grafana, Jaeger, OpenSearch — including bare-metal Kubernetes, Istio, and air-gapped government environments.</p>
+        <p>Three years owning enterprise observability POCs end-to-end. I've built multi-agent telemetry environments from scratch — real-time metrics, traces, and logs across Java, Go, and Python microservices. Once built a custom telemetry agent in under 2 weeks to save a $200K+ deal. Stack coverage: bare-metal Kubernetes (kubeadm), Istio, OpenTelemetry, Prometheus, Grafana, Jaeger, OpenSearch — including air-gapped government deployments.</p>
       </div>
       <div class="service-card">
         <div class="service-icon">DO</div>
         <h3>Data Observability</h3>
-        <p>Pre-sales and technical enablement for enterprise data observability — helping customers monitor the health, quality, and reliability of their data pipelines.</p>
+        <p>I help customers define what healthy data actually looks like for their stack, run POCs against real pipelines, and build the internal business case. I've run pre-sales and technical enablement across enterprise data teams — and contributed to the official product documentation, which means I understand the product at a depth that shows in customer conversations.</p>
       </div>
       <div class="service-card">
         <div class="service-icon">CS</div>
         <h3>Customer Success</h3>
-        <p>Post-sale agent installs, license and usage resolution, capability queries, and expansion identification. The pre-sales motion doesn't stop at close.</p>
+        <p>Post-close, I stay involved. I've handled agent installs, resolved license and usage questions, answered capability deep-dives, and identified expansion opportunities across the account base. Several customers have expanded based on work I did after the initial deal closed. The pre-sales motion doesn't stop at signature — keeping customers successful is what drives the next commercial outcome.</p>
       </div>
       <div class="service-card">
         <div class="service-icon">DOC</div>
         <h3>Technical Documentation</h3>
-        <p>Authored and maintained technical documentation for API Security and Data Observability products using Docusaurus — translating complex concepts into clear, developer-friendly content.</p>
+        <p>Authored and maintained docs for API Security and Data Observability using Docusaurus. This wasn't just copywriting — I translated complex detection logic, monitoring concepts, and integration patterns into developer-friendly content for external stakeholders and partners. Writing the docs also made me a sharper engineer for both products: you can't explain something well unless you actually understand it.</p>
       </div>
     </div>
   </section>
@@ -422,8 +424,8 @@
     <h2>Projects</h2>
     <div class="project-card">
       <span class="project-tag">Personal Project · AI/ML</span>
-      <h3>adi-gpt</h3>
-      <p>A GPT built from scratch — trained on Metal lyrics instead of Shakespeare. Inspired by Andrej Karpathy's "Let's Build GPT From Scratch" and implemented entirely in Python, adi-gpt is a character-level language model. It's the kind of project that starts as "I want to understand how this actually works" and ends with a model that generates surprisingly aggressive text.</p>
+      <h3>Metal-Lyrics-GPT</h3>
+      <p>A GPT built from scratch — trained on Metal lyrics instead of Shakespeare. Inspired by Andrej Karpathy's "Let's Build GPT From Scratch" and implemented entirely in Python, it's a character-level language model that starts as "I want to understand how this actually works" and ends with a model that generates surprisingly aggressive text.</p>
       <p>The comparison demo shows the model at each stage of the build — from basic bigram to full transformer blocks with attention, residual connections, and layer norm — so you can see exactly how each architectural addition improves the output.</p>
       <div class="project-links">
         <a href="https://github.com/adityas-31/adi-gpt" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
