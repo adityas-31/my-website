@@ -117,6 +117,29 @@
       100% { transform: translate(120px, 100px)   scale(0.85) rotate(10deg); }
     }
 
+    /* ── SCROLL PROGRESS ── */
+    #scroll-bar {
+      position: fixed; top: 56px; left: 0; z-index: 101;
+      height: 2px; width: 0%; background: var(--red);
+      transition: width 0.08s linear;
+      box-shadow: 0 0 8px rgba(220,38,38,0.5);
+    }
+    .scroll-hint {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      margin-top: 28px; opacity: 0; animation: hint-in 1s ease 1.8s forwards;
+    }
+    .scroll-hint span { font-size: 0.75rem; color: var(--text2); letter-spacing: 0.06em; text-transform: uppercase; }
+    .scroll-hint-arrow {
+      width: 18px; height: 18px; border-right: 2px solid var(--text2);
+      border-bottom: 2px solid var(--text2); transform: rotate(45deg);
+      animation: bounce-down 1.4s ease-in-out 1.8s infinite;
+    }
+    @keyframes hint-in { to { opacity: 1; } }
+    @keyframes bounce-down {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(5px); }
+    }
+
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -307,6 +330,7 @@
 </head>
 <body>
 
+  <div id="scroll-bar"></div>
   <canvas id="bg-canvas"></canvas>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -346,6 +370,10 @@
       <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
       <a href="mailto:adityasrinivasa31@gmail.com" class="btn btn-red">Email me</a>
       <a href="tel:+917619628020" class="btn btn-outline" onclick="handlePhoneClick(event, this)">+91-7619628020</a>
+    </div>
+    <div class="scroll-hint" id="scroll-hint">
+      <span>Scroll to explore</span>
+      <div class="scroll-hint-arrow"></div>
     </div>
   </section>
 
@@ -668,6 +696,21 @@
     const links  = document.getElementById('nav-links');
     toggle.addEventListener('click', () => links.classList.toggle('open'));
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+    // scroll progress bar + hide hint on scroll
+    const scrollBar  = document.getElementById('scroll-bar');
+    const scrollHint = document.getElementById('scroll-hint');
+    let hintHidden = false;
+    window.addEventListener('scroll', () => {
+      const doc    = document.documentElement;
+      const pct    = doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100;
+      scrollBar.style.width = pct + '%';
+      if (!hintHidden && doc.scrollTop > 40) {
+        scrollHint.style.transition = 'opacity 0.4s';
+        scrollHint.style.opacity    = '0';
+        hintHidden = true;
+      }
+    }, { passive: true });
 
     // phone copy
     function handlePhoneClick(e, btn) {
