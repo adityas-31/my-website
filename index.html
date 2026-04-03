@@ -202,10 +202,12 @@
     @media (max-width: 640px) { .achievement-grid { grid-template-columns: 1fr; } }
 
     /* ── KEY WINS ── */
+    .wins-sub { font-size: 0.85rem; color: var(--text2); margin-top: -20px; margin-bottom: 24px; font-style: italic; }
     .win-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .win-card {
       background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
       padding: 24px; transition: border-color 0.15s; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; gap: 0;
     }
     .win-card:hover { border-color: var(--border2); }
     .win-card::before {
@@ -215,7 +217,11 @@
     .win-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.08em; color: var(--red); margin-bottom: 10px; display: block; }
     .win-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.35; letter-spacing: -0.02em; }
-    .win-card p { font-size: 0.875rem; color: var(--text2); line-height: 1.55; }
+    .win-card p { font-size: 0.875rem; color: var(--text2); line-height: 1.55; margin-bottom: 8px; }
+    .win-card p:last-child { margin-bottom: 0; }
+    .win-stat { font-size: 0.8rem; color: var(--text); font-weight: 600; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); line-height: 1.5; }
+    .win-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 0.82rem; font-weight: 600; color: var(--red); text-decoration: none; transition: opacity 0.15s; }
+    .win-cta:hover { opacity: 0.75; }
     @media (max-width: 640px) { .win-grid { grid-template-columns: 1fr; } }
 
     /* ── WHAT I DO ── */
@@ -374,23 +380,58 @@
   </section>
 
   <section id="wins">
-    <h2>Key Wins</h2>
+    <h2>Wins</h2>
+    <p class="wins-sub">Not a list of responsibilities. Actual things that happened.</p>
     <div class="win-grid">
+
       <div class="win-card">
         <span class="win-tag">Government · Enterprise Deal</span>
-        <h3>Closed a contract with India's largest government organisation</h3>
-        <p>Led the end-to-end pre-sales motion — discovery, technical demo, POC, and commercial negotiation support — for a full-stack observability deployment inside one of India's most security-constrained environments. Navigated air-gapped infrastructure, strict procurement requirements, and multi-stakeholder sign-off to close the deal.</p>
+        <h3>Closed a $200K contract with India's largest government organisation</h3>
+        <p>Led the full pre-sales motion — discovery, technical demo, POC, and commercial negotiation support — for a full-stack observability deployment inside one of India's most security-constrained environments. Stood up the Kubernetes cluster from scratch, coordinated platform deployment with engineering, and installed agents across the infrastructure. Months later, when procurement timelines had run their course, delivered the full technical demo to stakeholders spanning public defence and space organisations.</p>
+        <p>Getting to close here isn't about pressure. It's about technical precision, patience, and keeping a deal warm across a long, non-linear cycle.</p>
+        <div class="win-stat">$200K · India's largest government organisation · Zero shortcuts.</div>
       </div>
+
       <div class="win-card">
         <span class="win-tag">Delivery · Operational Impact</span>
-        <h3>Dramatically cut on-prem deployment time for enterprise rollouts</h3>
-        <p>Identified repeated friction in on-premises deployments slowing down POC timelines and post-sale onboarding. Systematised the process — built reusable runbooks, environment checklists, and troubleshooting guides — reducing what used to take days to a reliable, repeatable workflow. Directly improved conversion rates by keeping POCs on schedule.</p>
+        <h3>Cut enterprise on-premises deployment time from weeks to days</h3>
+        <p>Identified repeated friction in on-premises deployments destroying POC timelines and post-sale onboarding. The variance was brutal — best case two weeks, worst case two months. That kind of unpredictability kills momentum and gives prospects time to lose confidence.</p>
+        <p>Systematised the entire process from scratch. Built reusable runbooks, environment checklists, and troubleshooting guides — turning what had been ad hoc and engineer-dependent into something repeatable. Unity Bank specifically called out the speed and quality of their deployment as a key reason for their decision.</p>
+        <div class="win-stat">Before: 2 weeks–2 months. After: 1–2 days. · $100K deal closed faster because the technical delivery didn't slow it down.</div>
       </div>
+
       <div class="win-card">
         <span class="win-tag">Product · Roadmap Influence</span>
-        <h3>Shaped the product roadmap three times through market intelligence</h3>
-        <p>Surfaced 15+ product gaps by synthesising customer feedback, competitive analysis (Datadog, Splunk, Elastic, Grafana), and market expectations. Three of those gaps were prioritised by Engineering and Product into the active roadmap — bridging the distance between what customers actually need and what the product ships.</p>
+        <h3>Shaped the product roadmap — three times</h3>
+        <p>Being in the field means seeing things the product team doesn't. Customer frustrations that don't make it into support tickets. Competitive gaps that only surface during live comparison demos. Friction that compounds across every POC.</p>
+        <p>Surfaced 15+ product gaps by synthesising direct customer feedback, competitive analysis across Datadog, Splunk, Elastic, and Grafana Loki, and patterns emerging across engagements. Three of those gaps were prioritised by Engineering and Product into the active roadmap.</p>
+        <div class="win-stat">15+ gaps surfaced · 3 prioritised to roadmap · Customer frustration → shipped product.</div>
       </div>
+
+      <div class="win-card">
+        <span class="win-tag">Engineering · Deal Save</span>
+        <h3>Built a custom telemetry agent in under 2 weeks to save a $200K+ account</h3>
+        <p>A critical client-side instrumentation blocker was threatening to derail a major account. The backend team couldn't unblock it on the timeline needed. Waiting wasn't an option.</p>
+        <p>Diagnosed the root cause, wrote the agent, tested it, and shipped it to production — in under two weeks, without backend team dependency, without escalation. The deal was saved. The account stayed. The blocker became a runbook.</p>
+        <div class="win-stat">Under 2 weeks · Zero escalations · $200K+ account retained.</div>
+      </div>
+
+      <div class="win-card">
+        <span class="win-tag">Documentation · Product Ownership</span>
+        <h3>Built the API Security and Data Observability documentation from scratch</h3>
+        <p>Both product documentation sets didn't exist in a structured form when I started. Wrote them end-to-end — detection logic, integration patterns, configuration references, and use case walkthroughs — using Docusaurus, working directly with Engineering to verify technical accuracy.</p>
+        <p>Documentation that customers, partners, and prospects now use to evaluate and onboard. Writing it gave me a depth of product knowledge that shows up in every demo and POC I run.</p>
+        <div class="win-stat">Two product doc sets built from zero · Still in production use.</div>
+      </div>
+
+      <div class="win-card">
+        <span class="win-tag">Speaking · Technical Workshops</span>
+        <h3>Delivered technical workshops across defence, space, banking, and security organisations</h3>
+        <p>5–6 workshops and seminars on observability, AI, and enterprise technology — delivered to some of India's most technically rigorous audiences including DRDO, ISRO, international banks, and international security and data companies.</p>
+        <p>These aren't sales pitches. They're technical sessions where people push back and you have to know your stuff.</p>
+        <a href="https://youtu.be/jiiGncnsYJo" target="_blank" rel="noopener" class="win-cta">▶ Watch: Cognitive AI — Streamlining Alert Management for Operational Excellence</a>
+      </div>
+
     </div>
   </section>
 
