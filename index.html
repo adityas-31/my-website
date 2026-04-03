@@ -190,6 +190,16 @@
     /* ── ABOUT ── */
     #about p { color: var(--text2); margin-bottom: 16px; font-size: 0.975rem; max-width: 720px; }
     #about p:last-child { margin-bottom: 0; }
+    #about ul { list-style: none; margin: 4px 0 20px; display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
+    #about ul li { color: var(--text2); font-size: 0.975rem; padding-left: 20px; position: relative; }
+    #about ul li::before { content: "→"; color: var(--red); position: absolute; left: 0; }
+    #about ul li strong { color: var(--text); font-weight: 600; }
+    .achievement-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+    .achievement-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; transition: border-color 0.15s; }
+    .achievement-card:hover { border-color: var(--border2); }
+    .achievement-metric { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; color: var(--red); line-height: 1; margin-bottom: 6px; }
+    .achievement-label { font-size: 0.82rem; color: var(--text2); line-height: 1.4; }
+    @media (max-width: 640px) { .achievement-grid { grid-template-columns: 1fr; } }
 
     /* ── WHAT I DO ── */
     .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
@@ -285,10 +295,11 @@
       <a href="#hero" class="nav-name">Aditya<span>.</span></a>
       <ul class="nav-links" id="nav-links">
         <a href="#about">About</a>
-        <a href="#work">Work</a>
         <a href="#experience">Experience</a>
+        <a href="#work">Work</a>
         <a href="#projects">Projects</a>
         <a href="#skills">Skills</a>
+        <a href="#education">Education</a>
         <a href="#contact">Contact</a>
       </ul>
     </div>
@@ -314,9 +325,61 @@
 
   <section id="about">
     <h2>About</h2>
-    <p>I'm a Pre-Sales Specialist who sits at the intersection of engineering and customer outcomes. My job is to take genuinely complex technical platforms — observability stacks, API security products, data pipelines — and make them click for the people evaluating them, buying them, and using them.</p>
-    <p>I've spent the last 3+ years doing exactly that across three product lines: Full Stack Observability, Data Observability, and API Security. I've owned 20+ enterprise POCs, influenced $1M+ in pipeline, and at one point built a custom telemetry agent from scratch in under two weeks to save a deal that was about to fall apart.</p>
-    <p>I'm not a pure salesperson and I'm not a pure engineer. I'm the person who gets called when the customer is stuck, the demo isn't landing, the integration is broken, or nobody can agree on what the product actually does. I figure it out.</p>
+    <p>I'm a Pre-Sales Specialist and Solutions Engineer with 3+ years at Rakuten SixthSense, where I've owned the technical side of enterprise sales cycles across API Security, Full Stack Observability, and Data Observability. I've traveled extensively across Southeast Asia and India — visiting customers in Singapore, Jakarta, Kuala Lumpur, Mumbai, Hyderabad, and beyond — running on-site discovery sessions and building the kind of trust that actually closes deals.</p>
+    <p>Here's what the last 3 years have actually looked like:</p>
+    <ul>
+      <li>Owned <strong>20+ enterprise POCs end-to-end</strong> with ~80% conversion rate — across enterprise, mid-market, and government sectors</li>
+      <li>Influenced <strong>$1M+ in pipeline</strong> through hands-on technical delivery — from custom demo environments to live proof-of-concept execution</li>
+      <li>Built a <strong>custom telemetry agent from scratch in under 2 weeks</strong>, rescuing a $200K+ deal that was at risk of falling through</li>
+      <li>Ran pre-sales across <strong>3 product lines</strong> — API Security, Full Stack Observability, and Data Observability — covering threat detection, distributed tracing, metrics pipelines, and log analytics</li>
+      <li>Surfaced <strong>15+ product gaps</strong> to Engineering and Product, directly influencing 3 roadmap priorities</li>
+      <li>Authored and maintained <strong>technical documentation</strong> (Docusaurus) for API Security and Data Observability products</li>
+      <li>Managed <strong>government and enterprise accounts</strong> with strict security requirements, including air-gapped deployment scenarios</li>
+    </ul>
+    <p>I'm not a pure salesperson and I'm not a pure engineer. I'm the person who gets called when the customer is stuck, the demo isn't landing, or nobody can agree on what the product actually does. I figure it out.</p>
+    <div class="achievement-grid">
+      <div class="achievement-card">
+        <div class="achievement-metric">$1M+</div>
+        <div class="achievement-label">Pipeline influenced through technical pre-sales delivery across 3 product lines</div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-metric">~80%</div>
+        <div class="achievement-label">POC conversion rate across 20+ enterprise proof-of-concepts owned end-to-end</div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-metric">&lt;2 Wks</div>
+        <div class="achievement-label">To build a custom telemetry agent that saved a $200K+ account from falling through</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <h2>Experience</h2>
+    <div class="exp-item">
+      <div class="exp-header">
+        <span class="exp-company">Rakuten SixthSense</span>
+        <span class="exp-period">Jan 2023 – Present</span>
+      </div>
+      <div class="exp-role">Pre-Sales Specialist (Apr 2026 – Present) · Pre-Sales Consultant (Jan 2023 – Mar 2026)</div>
+      <p class="exp-desc">Enterprise observability and security platform. Joined as Pre-Sales Consultant, promoted to Specialist in recognition of delivery impact and customer outcomes. Covered three product lines: API Security, Full Stack Observability, Data Observability.</p>
+      <ul class="exp-highlights">
+        <li>20+ enterprise POCs owned end-to-end with ~80% conversion rate</li>
+        <li>$1M+ in pipeline influenced through technical delivery and customer trust</li>
+        <li>Custom telemetry agent built and shipped in under 2 weeks, saving a $200K+ account</li>
+        <li>15+ product gaps surfaced to Engineering and Product, influencing 3 roadmap priorities</li>
+        <li>Technical documentation authored and maintained via Docusaurus</li>
+        <li>Customers across enterprise, mid-market, and government sectors in India and SEA</li>
+      </ul>
+    </div>
+    <hr class="exp-divider">
+    <div class="exp-item">
+      <div class="exp-header">
+        <span class="exp-company">Sasken Technologies Ltd.</span>
+        <span class="exp-period">Jun 2022 – Jul 2022</span>
+      </div>
+      <div class="exp-role">Data Engineering Intern</div>
+      <p class="exp-desc">Built ETL pipelines using Hadoop and Apache Spark to process and transform large-scale datasets. Delivered Microsoft Power BI dashboards surfacing actionable business insights for internal stakeholders.</p>
+    </div>
   </section>
 
   <section id="work">
@@ -352,35 +415,6 @@
         <h3>Technical Documentation</h3>
         <p>Authored and maintained technical documentation for API Security and Data Observability products using Docusaurus — translating complex concepts into clear, developer-friendly content.</p>
       </div>
-    </div>
-  </section>
-
-  <section id="experience">
-    <h2>Experience</h2>
-    <div class="exp-item">
-      <div class="exp-header">
-        <span class="exp-company">Rakuten SixthSense</span>
-        <span class="exp-period">Jan 2023 – Present</span>
-      </div>
-      <div class="exp-role">Pre-Sales Specialist (Apr 2026 – Present) · Pre-Sales Consultant (Jan 2023 – Mar 2026)</div>
-      <p class="exp-desc">Enterprise observability and security platform. Joined as Pre-Sales Consultant, promoted to Specialist in recognition of delivery impact and customer outcomes. Covered three product lines: API Security, Full Stack Observability, Data Observability.</p>
-      <ul class="exp-highlights">
-        <li>20+ enterprise POCs owned end-to-end with ~80% conversion rate</li>
-        <li>$1M+ in pipeline influenced through technical delivery and customer trust</li>
-        <li>Custom telemetry agent built and shipped in under 2 weeks, saving a $200K+ account</li>
-        <li>15+ product gaps surfaced to Engineering and Product, influencing 3 roadmap priorities</li>
-        <li>Technical documentation authored and maintained via Docusaurus</li>
-        <li>Customers across enterprise, mid-market, and government sectors in India and SEA</li>
-      </ul>
-    </div>
-    <hr class="exp-divider">
-    <div class="exp-item">
-      <div class="exp-header">
-        <span class="exp-company">Sasken Technologies Ltd.</span>
-        <span class="exp-period">Jun 2022 – Jul 2022</span>
-      </div>
-      <div class="exp-role">Data Engineering Intern</div>
-      <p class="exp-desc">Built ETL pipelines using Hadoop and Apache Spark to process and transform large-scale datasets. Delivered Microsoft Power BI dashboards surfacing actionable business insights for internal stakeholders.</p>
     </div>
   </section>
 
@@ -491,6 +525,18 @@
     </div>
   </section>
 
+  <section id="education">
+    <h2>Education</h2>
+    <div class="exp-item">
+      <div class="exp-header">
+        <span class="exp-company">PES University</span>
+        <span class="exp-period">2019 – 2023</span>
+      </div>
+      <div class="exp-role">B.Tech in Computer Science</div>
+      <p class="exp-desc">Bengaluru, India · CGPA: 7.61</p>
+    </div>
+  </section>
+
   <section id="more">
     <h2>A Bit More</h2>
     <div class="card">
@@ -511,6 +557,7 @@
         <a href="mailto:adityasrinivasa31@gmail.com" class="btn btn-red">Email me</a>
         <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn</a>
         <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+        <a href="tel:+917619628020" class="btn btn-outline" id="phone-btn" onclick="handlePhoneClick(event, this)">+91-7619628020</a>
       </div>
     </div>
   </section>
@@ -539,6 +586,15 @@
     const links  = document.getElementById('nav-links');
     toggle.addEventListener('click', () => links.classList.toggle('open'));
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+    // phone copy
+    function handlePhoneClick(e, btn) {
+      navigator.clipboard.writeText('+91-7619628020').then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = orig, 2000);
+      }).catch(() => {});
+    }
 
     // canvas background network
     (function() {
