@@ -217,12 +217,12 @@
     #about ul li { color: var(--text2); font-size: 0.975rem; padding-left: 20px; position: relative; }
     #about ul li::before { content: "→"; color: var(--red); position: absolute; left: 0; }
     #about ul li strong { color: var(--text); font-weight: 600; }
-    .achievement-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+    .achievement-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
     .achievement-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; transition: border-color 0.15s; }
     .achievement-card:hover { border-color: var(--border2); }
     .achievement-metric { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; color: var(--red); line-height: 1; margin-bottom: 6px; }
     .achievement-label { font-size: 0.82rem; color: var(--text2); line-height: 1.4; }
-    @media (max-width: 640px) { .achievement-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .achievement-grid { grid-template-columns: repeat(2, 1fr); } }
 
     /* ── KEY WINS ── */
     .wins-sub { font-size: 0.85rem; color: var(--text2); margin-top: -20px; margin-bottom: 24px; font-style: italic; }
@@ -242,7 +242,7 @@
     .win-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.35; letter-spacing: -0.02em; }
     .win-card p { font-size: 0.875rem; color: var(--text2); line-height: 1.55; margin-bottom: 8px; }
     .win-card p:last-child { margin-bottom: 0; }
-    .win-stat { font-size: 0.8rem; color: var(--text); font-weight: 600; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); line-height: 1.5; }
+    .win-stat { font-size: 0.8rem; color: var(--text); font-weight: 600; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); line-height: 1.5; }
     .win-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 0.82rem; font-weight: 600; color: var(--red); text-decoration: none; transition: opacity 0.15s; }
     .win-cta:hover { opacity: 0.75; }
     @media (max-width: 640px) { .win-grid { grid-template-columns: 1fr; } }
@@ -364,7 +364,7 @@
     <h1 class="hero-name">Aditya Srinivasa<span class="dot">.</span></h1>
     <p class="hero-tagline">I make complex technology feel inevitable to the people who need to use it.</p>
     <p class="hero-sub">Pre-Sales Specialist · Solutions Engineer · API Security · Observability · Builder of things that probably shouldn't work but do.</p>
-    <p class="hero-location">Bengaluru, India</p>
+    <p class="hero-location">Bengaluru, India — Open to APAC opportunities</p>
     <div class="hero-links">
       <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn</a>
       <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
@@ -379,22 +379,28 @@
 
   <section id="about">
     <h2>About</h2>
-    <p>I'm a Pre-Sales Specialist and Solutions Engineer with 3+ years at Rakuten SixthSense, where I've owned the technical side of enterprise sales cycles across API Security, Full Stack Observability, and Data Observability. I've traveled extensively across Southeast Asia and India — visiting customers in Singapore, Jakarta, Kuala Lumpur, Mumbai, Hyderabad, and beyond — running on-site discovery sessions and building the kind of trust that actually closes deals.</p>
-    <p>Here's what the last 3 years have actually looked like:</p>
+    <p>I'm a Pre-Sales Specialist and Solutions Engineer with 3+ years at Rakuten SixthSense, where I've served as the primary SE for all of APAC and India — managing a $1.5M+ target pipeline across Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, and the Philippines simultaneously. I've run discovery sessions, technical demos, and POC discussions for some of the region's most recognisable institutions: central banking authorities, national carriers, national telcos, national payments infrastructure providers, leading healthtech platforms, and defence and engineering conglomerates.</p>
+    <p>Here's what the last 3+ years have actually looked like:</p>
     <ul>
-      <li>Owned <strong>20+ enterprise POCs end-to-end</strong> with ~80% conversion rate — across enterprise, mid-market, and government sectors</li>
-      <li>Influenced <strong>$1M+ in pipeline</strong> through hands-on technical delivery — from custom demo environments to live proof-of-concept execution</li>
+      <li>Sole SE for all of APAC and India — <strong>50+ active enterprise engagements</strong> across 9 countries in the last year alone</li>
+      <li><strong>$1.5M+ target pipeline</strong> managed across Southeast Asia and India simultaneously</li>
+      <li><strong>20+ enterprise POCs owned end-to-end</strong> with ~80% conversion rate — across enterprise, mid-market, and government sectors</li>
+      <li><strong>$1M+ in revenue influenced</strong> through hands-on technical delivery across three product lines</li>
       <li>Built a <strong>custom telemetry agent from scratch in under 2 weeks</strong>, rescuing a $200K+ deal that was at risk of falling through</li>
-      <li>Ran pre-sales across <strong>3 product lines</strong> — API Security, Full Stack Observability, and Data Observability — covering threat detection, distributed tracing, metrics pipelines, and log analytics</li>
+      <li>Ran pre-sales across <strong>3 product lines</strong> — Full Stack Observability (APM/AIOps), Data Observability, and API Security</li>
       <li>Surfaced <strong>15+ product gaps</strong> to Engineering and Product, directly influencing 3 roadmap priorities</li>
       <li>Authored and maintained <strong>technical documentation</strong> (Docusaurus) for API Security and Data Observability products</li>
-      <li>Managed <strong>government and enterprise accounts</strong> with strict security requirements, including air-gapped deployment scenarios</li>
+      <li>Delivered <strong>5–6 technical workshops</strong> at public defence organisations, national space agencies, international banks, and international security and data companies</li>
     </ul>
     <p>I'm not a pure salesperson and I'm not a pure engineer. I'm the person who gets called when the customer is stuck, the demo isn't landing, or nobody can agree on what the product actually does. I figure it out.</p>
     <div class="achievement-grid">
       <div class="achievement-card">
-        <div class="achievement-metric">$1M+</div>
-        <div class="achievement-label">Pipeline influenced through technical pre-sales delivery across 3 product lines</div>
+        <div class="achievement-metric">$1.5M+</div>
+        <div class="achievement-label">Target pipeline managed across APAC and India as the sole SE for the region</div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-metric">9</div>
+        <div class="achievement-label">Countries covered — Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, Philippines, India, and UK</div>
       </div>
       <div class="achievement-card">
         <div class="achievement-metric">~80%</div>
@@ -402,7 +408,7 @@
       </div>
       <div class="achievement-card">
         <div class="achievement-metric">&lt;2 Wks</div>
-        <div class="achievement-label">To build a custom telemetry agent that saved a $200K+ account from falling through</div>
+        <div class="achievement-label">To build and ship a custom telemetry agent that saved a $200K+ account from falling through</div>
       </div>
     </div>
   </section>
@@ -415,50 +421,50 @@
       <div class="win-card">
         <span class="win-tag">Government · Enterprise Deal</span>
         <h3>Closed a $200K contract with India's largest government organisation</h3>
+        <div class="win-stat">$200K · India's largest government organisation · Zero shortcuts.</div>
         <p>Led the full pre-sales motion — discovery, technical demo, POC, and commercial negotiation support — for a full-stack observability deployment inside one of India's most security-constrained environments. Stood up the Kubernetes cluster from scratch, coordinated platform deployment with engineering, and installed agents across air-gapped infrastructure. Delivered the final technical demo to stakeholders spanning public defence and space organisations months later, after navigating one of the longest and most security-constrained procurement cycles I've worked through.</p>
         <p>Getting to close here isn't about pressure. It's about technical precision, patience, and keeping a deal warm across a long, non-linear cycle.</p>
-        <div class="win-stat">$200K · India's largest government organisation · Zero shortcuts.</div>
       </div>
 
       <div class="win-card">
         <span class="win-tag">Delivery · Operational Impact</span>
         <h3>Cut enterprise on-premises deployment time from weeks to days</h3>
+        <div class="win-stat">Before: 2 weeks–2 months. After: 1–2 days. · $100K deal closed faster because the technical delivery didn't slow it down.</div>
         <p>Identified repeated friction in on-premises deployments that was destroying POC timelines and post-sale onboarding. The variance was brutal — best case two weeks, worst case two months. That kind of unpredictability kills deal momentum and gives prospects time to lose confidence.</p>
         <p>Systematised the entire process from scratch. Built reusable runbooks, environment checklists, and troubleshooting guides — turning what had been ad hoc into something repeatable and fast. One enterprise banking customer specifically cited the speed and quality of their deployment as a key reason for their decision.</p>
-        <div class="win-stat">Before: 2 weeks–2 months. After: 1–2 days. · $100K deal closed faster because the technical delivery didn't slow it down.</div>
       </div>
 
       <div class="win-card">
         <span class="win-tag">Engineering · Deal Save</span>
         <h3>Built a custom telemetry agent in under 2 weeks to save a $200K+ account</h3>
+        <div class="win-stat">Under 2 weeks · Zero escalations · $200K+ account retained.</div>
         <p>A critical client-side instrumentation blocker was threatening to derail a major account. The backend team couldn't unblock it on the timeline needed. Waiting wasn't an option.</p>
         <p>Diagnosed the root cause, wrote the agent, tested it, and shipped it to production — in under two weeks, without backend team dependency, without escalation. The deal was saved. The account stayed. The blocker became a runbook.</p>
-        <div class="win-stat">Under 2 weeks · Zero escalations · $200K+ account retained.</div>
       </div>
 
       <div class="win-card">
         <span class="win-tag">APAC · Market Development</span>
         <h3>Sole SE for all of APAC — 50+ enterprise engagements across 9 countries</h3>
-        <p>Served as the primary Solutions Engineer for all of Southeast Asia and India simultaneously — managing a $1.5M+ target pipeline spanning Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, and the Philippines. Ran discovery, demos, and POC discussions for some of the region's most recognisable institutions: central banking authorities, national carriers, national telcos, national payments infrastructure providers, leading healthtech platforms, and defence and engineering conglomerates.</p>
-        <p>Adapted technical positioning across wildly different industries, regulatory contexts, and digital maturity levels — from regulated financial institutions to government bodies to high-growth startups — across 9 countries in a single role.</p>
         <div class="win-stat">$1.5M+ target pipeline · 9 countries · 50+ active enterprise engagements across APAC.</div>
+        <p>Served as the primary Solutions Engineer for all of Southeast Asia and India simultaneously — managing a $1.5M+ target pipeline spanning Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, and the Philippines. Ran discovery, demos, and POC discussions for some of the region's most recognisable institutions: central banking authorities, national carriers, national telcos, national payments infrastructure providers, leading healthtech platforms, and defence and engineering conglomerates.</p>
+        <p>Adapted technical positioning across wildly different industries, regulatory contexts, and digital maturity levels — from regulated financial institutions to government bodies to high-growth startups — across 9 countries in a single role. Built partner relationships with system integrators and resellers across Malaysia, Sri Lanka, Singapore, and Indonesia to extend reach into markets where direct access was limited.</p>
       </div>
 
       <div class="win-card">
         <span class="win-tag">Product · Roadmap Influence</span>
         <h3>Shaped the product roadmap — three times</h3>
-        <p>Being in the field means seeing things the product team doesn't. Customer frustrations that don't make it into support tickets. Competitive gaps that only surface during live comparison demos. Friction that compounds across every POC.</p>
-        <p>Surfaced 15+ product gaps by synthesising direct customer feedback, competitive analysis across Datadog, Splunk, Elastic, and Grafana Loki, and patterns emerging across engagements in India and SEA. Three of those gaps were prioritised by Engineering and Product into the active roadmap.</p>
         <div class="win-stat">15+ gaps surfaced · 3 prioritised to roadmap · Customer frustration → shipped product.</div>
+        <p>Being in the field means seeing things the product team doesn't. Customer frustrations that don't make it into support tickets. Competitive gaps that only surface during live comparison demos. Friction that compounds across every POC.</p>
+        <p>Surfaced 15+ product gaps by synthesising direct customer feedback from across India and SEA, competitive analysis across Datadog, Splunk, Elastic, and Grafana Loki, and patterns emerging across engagements in 9 countries. Three of those gaps were prioritised by Engineering and Product into the active roadmap — bridging the distance between what customers actually need and what the product ships.</p>
       </div>
 
       <div class="win-card">
         <span class="win-tag">Speaking · Technical Workshops</span>
         <h3>Delivered technical workshops across defence, space, banking, and security organisations</h3>
+        <div class="win-stat">5–6 workshops · Public defence & space organisations · International banks & security companies.</div>
         <p>5–6 workshops and seminars on observability, AI, and enterprise technology — delivered to some of India's most technically rigorous audiences including public defence organisations, national space agencies, international banks, and international security and data companies.</p>
         <p>These aren't sales pitches. They're technical sessions where people push back and you have to know your stuff.</p>
         <a href="https://youtu.be/jiiGncnsYJo" target="_blank" rel="noopener" class="win-cta">▶ Watch: Cognitive AI — Streamlining Alert Management for Operational Excellence</a>
-        <div class="win-stat">5–6 workshops · DRDO · ISRO · International banks & security companies.</div>
       </div>
 
     </div>
@@ -472,14 +478,17 @@
         <span class="exp-period">Jan 2023 – Present</span>
       </div>
       <div class="exp-role">Pre-Sales Specialist (Apr 2026 – Present) · Pre-Sales Consultant (Jan 2023 – Mar 2026)</div>
-      <p class="exp-desc">Enterprise observability and security platform. Joined as Pre-Sales Consultant, promoted to Specialist in recognition of delivery impact and customer outcomes. Covered three product lines: API Security, Full Stack Observability, Data Observability.</p>
+      <p class="exp-desc">Enterprise observability and security platform. Joined as Pre-Sales Consultant, promoted to Specialist in recognition of delivery impact and customer outcomes. Served as the primary SE for all of APAC and India across three product lines: Full Stack Observability (APM/AIOps), Data Observability, and API Security.</p>
       <ul class="exp-highlights">
+        <li>Sole SE for APAC and India — managed $1.5M+ target pipeline across 9 countries simultaneously</li>
+        <li>50+ active enterprise engagements across Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, Philippines, and India</li>
+        <li>Ran demos and POC discussions for central banking authorities, national carriers, national telcos, national payments providers, leading healthtech platforms, and defence conglomerates across SEA</li>
         <li>20+ enterprise POCs owned end-to-end with ~80% conversion rate</li>
-        <li>$1M+ in pipeline influenced through technical delivery and customer trust</li>
+        <li>$1M+ in revenue influenced through technical delivery and customer trust</li>
         <li>Custom telemetry agent built and shipped in under 2 weeks, saving a $200K+ account</li>
         <li>15+ product gaps surfaced to Engineering and Product, influencing 3 roadmap priorities</li>
-        <li>Technical documentation authored and maintained via Docusaurus</li>
-        <li>Customers across enterprise, mid-market, and government sectors in India and SEA</li>
+        <li>Technical documentation authored and maintained via Docusaurus for API Security and Data Observability</li>
+        <li>Built partner relationships with system integrators and resellers across Malaysia, Sri Lanka, Singapore, and Indonesia</li>
       </ul>
     </div>
     <hr class="exp-divider">
@@ -499,7 +508,7 @@
       <div class="service-card">
         <div class="service-icon">PS</div>
         <h3>Pre-Sales & Solutions Engineering</h3>
-        <p>End-to-end POC ownership, demo delivery, solution design, RFP responses. I partner with sales to be the most useful technical person in the room — across enterprise, mid-market, and government in India and SEA.</p>
+        <p>End-to-end POC ownership, demo delivery, solution design, RFP responses. I've been the primary SE for all of APAC and India — adapting technical positioning across 9 countries, wildly different industries, and C-suite stakeholders from central banking authorities to high-growth startups. I partner with sales to be the most useful technical person in the room, wherever that room happens to be.</p>
       </div>
       <div class="service-card">
         <div class="service-icon">API</div>
@@ -519,7 +528,7 @@
       <div class="service-card">
         <div class="service-icon">CS</div>
         <h3>Customer Success</h3>
-        <p>Post-close, I stay involved. I've handled agent installs, resolved license and usage questions, answered capability deep-dives, and identified expansion opportunities across the account base. Several customers have expanded based on work I did after the initial deal closed. The pre-sales motion doesn't stop at signature — keeping customers successful is what drives the next commercial outcome.</p>
+        <p>Post-close, I stay involved. I've handled agent installs, resolved license and usage questions, answered capability deep-dives, and identified expansion opportunities across the account base in India and SEA. Several customers have expanded based on work I did after the initial deal closed. The pre-sales motion doesn't stop at signature.</p>
       </div>
       <div class="service-card">
         <div class="service-icon">DOC</div>
@@ -568,6 +577,9 @@
           <span class="skill-tag">Battle Cards</span>
           <span class="skill-tag">Customer Success</span>
           <span class="skill-tag">Docusaurus</span>
+          <span class="skill-tag">APAC Market Development</span>
+          <span class="skill-tag">Partner & Channel Enablement</span>
+          <span class="skill-tag">GTM Strategy</span>
         </div>
       </div>
       <div class="skill-group">
