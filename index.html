@@ -22,6 +22,9 @@
       --border2: #333333;
       --btn-bg:  #e5e5e5;
       --btn-fg:  #0a0a0a;
+      --glass:   rgba(17,17,17,0.55);
+      --glow:    rgba(220,38,38,0.35);
+      --shine:   rgba(255,255,255,0.07);
     }
     [data-theme="light"] {
       --bg:      #ffffff;
@@ -33,6 +36,9 @@
       --border2: #d1d5db;
       --btn-bg:  #0f0f0f;
       --btn-fg:  #ffffff;
+      --glass:   rgba(255,255,255,0.6);
+      --glow:    rgba(220,38,38,0.16);
+      --shine:   rgba(0,0,0,0.05);
     }
 
     html { scroll-behavior: smooth; }
@@ -40,7 +46,73 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       color: var(--text); background: var(--bg);
       font-size: 16px; line-height: 1.6;
-      transition: background 0.2s, color 0.2s;
+      overflow-x: hidden;
+    }
+    body.loading { overflow: hidden; }
+    @media (pointer: fine) {
+      body, body a, body button { cursor: none; }
+    }
+    ::selection { background: var(--red); color: #fff; }
+
+    /* theme-change circular wipe (View Transitions API) */
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+    /* ── INTRO LOADER ── */
+    #loader {
+      position: fixed; inset: 0; z-index: 1000; background: #0a0a0a;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px;
+      transition: transform 0.85s cubic-bezier(0.76, 0, 0.24, 1);
+      overflow: hidden;
+    }
+    #loader.done { transform: translateY(-103%) skewY(-3deg); }
+    #loader::before {
+      content: ''; position: absolute; left: -6%; right: -6%;
+      top: calc(50% - 64px); height: 96px;
+      background: var(--red);
+      transform: rotate(-2.4deg) skewX(-16deg);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.55);
+    }
+    .loader-name {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: clamp(1.3rem, 4.5vw, 2.4rem); font-weight: 800;
+      letter-spacing: -0.02em; color: #fff; white-space: nowrap;
+      position: relative; transform: skewX(-6deg);
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+    }
+    .loader-name .ldot { color: #0a0a0a; text-shadow: none; }
+    .loader-line { position: relative; }
+    .loader-line {
+      width: min(280px, 64vw); height: 2px; background: #222; overflow: hidden; border-radius: 2px;
+    }
+    .loader-line span {
+      display: block; height: 100%; width: 0%;
+      background: var(--red); box-shadow: 0 0 14px var(--red);
+      transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor-dot, .cursor-ring {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+      border-radius: 50%; transform: translate(-50%, -50%); display: none;
+    }
+    @media (pointer: fine) { .cursor-dot, .cursor-ring { display: block; } }
+    .cursor-dot { width: 6px; height: 6px; background: var(--red); box-shadow: 0 0 10px var(--red); }
+    .cursor-ring {
+      width: 34px; height: 34px;
+      border: 1.5px solid color-mix(in srgb, var(--red) 60%, transparent);
+      transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+    .cursor-ring.hovering {
+      width: 56px; height: 56px; border-color: var(--red);
+      background: color-mix(in srgb, var(--red) 10%, transparent);
+    }
+
+    /* ── SCROLL PROGRESS ── */
+    #scroll-bar {
+      position: fixed; top: 0; left: 0; z-index: 201;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, #7f1d1d, var(--red), #f87171);
+      box-shadow: 0 0 12px var(--glow);
     }
 
     /* ── CANVAS BACKGROUND ── */
@@ -49,11 +121,30 @@
       z-index: 0; pointer-events: none;
     }
 
-    /* ── LAVA ORBS ── */
-    .orb {
-      position: fixed; border-radius: 50%;
-      filter: blur(90px); pointer-events: none; z-index: 0;
+    /* ── NOISE OVERLAY ── */
+    .noise {
+      position: fixed; inset: -50%; width: 200%; height: 200%;
+      z-index: 2; pointer-events: none; opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grain 8s steps(10) infinite;
     }
+    [data-theme="light"] .noise { opacity: 0.025; }
+    @keyframes grain {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-5%, -10%); }
+      20% { transform: translate(-15%, 5%); }
+      30% { transform: translate(7%, -25%); }
+      40% { transform: translate(-5%, 25%); }
+      50% { transform: translate(-15%, 10%); }
+      60% { transform: translate(15%, 0%); }
+      70% { transform: translate(0%, 15%); }
+      80% { transform: translate(3%, 35%); }
+      90% { transform: translate(-10%, 10%); }
+    }
+
+    /* ── LAVA ORBS ── */
+    .orb-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; will-change: transform; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; }
     [data-theme="dark"] .orb { opacity: 0.22; }
     [data-theme="light"] .orb { opacity: 0.18; }
     [data-theme="light"] .orb-1 { background: radial-gradient(circle, rgba(220,38,38,0.5) 0%, rgba(220,38,38,0.08) 55%, transparent 75%); }
@@ -85,7 +176,6 @@
       top: 15%; right: 10%;
       animation: drift-4 14s ease-in-out infinite alternate;
     }
-
     @keyframes drift-1 {
       0%   { transform: translate(0, 0)           scale(1)    rotate(0deg); }
       20%  { transform: translate(160px, 120px)   scale(1.18) rotate(15deg); }
@@ -117,22 +207,168 @@
       100% { transform: translate(120px, 100px)   scale(0.85) rotate(10deg); }
     }
 
-    /* ── SCROLL PROGRESS ── */
-    #scroll-bar {
-      position: fixed; top: 56px; left: 0; z-index: 101;
-      height: 2px; width: 0%; background: var(--red);
-      transition: width 0.08s linear;
-      box-shadow: 0 0 8px rgba(220,38,38,0.5);
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(14px) saturate(1.4);
+      -webkit-backdrop-filter: blur(14px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: transform 0.35s ease;
     }
+    nav.hidden { transform: translateY(-100%); }
+    .nav-left { display: flex; align-items: center; gap: 28px; min-width: 0; }
+    .nav-name { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; flex-shrink: 0; }
+    .nav-name span { color: var(--red); display: inline-block; animation: pulse-dot 2.5s ease-in-out infinite; }
+    .nav-links { display: flex; gap: 20px; list-style: none; flex-wrap: nowrap; }
+    .nav-links a {
+      font-size: 0.82rem; color: var(--text2); text-decoration: none;
+      transition: color 0.15s, transform 0.2s ease; position: relative; padding: 4px 0; white-space: nowrap;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; left: 0; bottom: 0;
+      width: 100%; height: 1.5px; background: var(--red);
+      transform: scaleX(0); transform-origin: right;
+      transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .nav-links a { display: inline-block; }
+    .nav-links a:hover { color: var(--text); transform: skewX(-8deg); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1) skewX(-30deg); transform-origin: left; }
+    .nav-links a.active { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .theme-btn {
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text2); cursor: pointer; border-radius: 6px;
+      padding: 5px 10px; font-size: 0.8rem; transition: all 0.15s; line-height: 1;
+    }
+    .theme-btn:hover { color: var(--text); border-color: var(--border2); transform: rotate(20deg); }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: 4px;
+    }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); transition: all 0.2s; }
+    @media (max-width: 1080px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* ── LAYOUT ── */
+    section { padding: 56px 24px; max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+    section + section { padding-top: 40px; }
+    h2 {
+      font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 32px; color: var(--text);
+      display: flex; align-items: center; gap: 12px;
+    }
+    h2::before {
+      content: ''; width: 11px; height: 22px; flex-shrink: 0;
+      background: var(--red); transform: skewX(-18deg);
+      box-shadow: 3px 3px 0 color-mix(in srgb, var(--text) 20%, transparent);
+    }
+    h2::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--red), var(--border) 40%, var(--border));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+    }
+    .in-view h2::after { transform: scaleX(1); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--d, 0s);
+    }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+    /* ── HERO ── */
+    #hero { padding-top: 120px; padding-bottom: 64px; position: relative; }
+    #hero::before {
+      content: ''; position: absolute; inset: 0 -100vw 0 -100vw; z-index: -1;
+      background-image:
+        linear-gradient(color-mix(in srgb, var(--text) 4%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--text) 4%, transparent) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 90% at 50% 0%, black 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 90% at 50% 0%, black 0%, transparent 75%);
+      animation: grid-pan 30s linear infinite;
+    }
+    @keyframes grid-pan {
+      from { background-position: 0 0, 0 0; }
+      to   { background-position: 56px 56px, 56px 56px; }
+    }
+    #hero::after {
+      content: ''; position: absolute; top: 84px; right: -30px;
+      width: 340px; height: 250px; z-index: -1; pointer-events: none;
+      background-image: radial-gradient(color-mix(in srgb, var(--red) 60%, transparent) 1.2px, transparent 1.7px);
+      background-size: 13px 13px;
+      transform: skewX(-12deg);
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 72%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 72%);
+      opacity: 0.4;
+    }
+    .hero-line {
+      opacity: 0; transform: translateY(30px);
+      animation: rise-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation-delay: calc(1.45s + var(--hd, 0s));
+    }
+    @keyframes rise-in { to { opacity: 1; transform: translateY(0); } }
+
+    .hero-name-wrap { position: relative; margin-bottom: 26px; }
+    .hero-name {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 900; letter-spacing: -0.04em;
+      line-height: 1.1;
+      display: inline-block; position: relative;
+      transform: skewX(-4deg);
+      animation: name-cut 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.55s both;
+    }
+    @keyframes name-cut {
+      from { clip-path: polygon(-8% 0, -8% 0, -22% 110%, -22% 110%); }
+      to   { clip-path: polygon(-8% 0, 116% 0, 102% 110%, -22% 110%); }
+    }
+    .hero-name .name-text {
+      color: var(--text);
+      text-shadow: 0.045em 0.045em 0 var(--red);
+    }
+    .hero-name::after {
+      content: ''; position: absolute; left: 1%; bottom: -12px;
+      width: 42%; height: 9px; background: var(--red);
+      transform: skewX(-32deg);
+      box-shadow: 5px 5px 0 color-mix(in srgb, var(--text) 22%, transparent);
+    }
+    .hero-name .dot { color: var(--red); display: inline-block; animation: pulse-dot 2.5s ease-in-out infinite; }
+    @keyframes pulse-dot {
+      0%, 100% { text-shadow: 0 0 8px rgba(220,38,38,0.5); }
+      50%       { text-shadow: 0 0 20px rgba(220,38,38,1), 0 0 40px rgba(220,38,38,0.4); }
+    }
+    .hero-tagline { font-size: clamp(1.05rem, 2.5vw, 1.25rem); color: var(--text); max-width: 600px; margin-bottom: 12px; line-height: 1.5; }
+    .hero-sub { font-size: 0.875rem; color: var(--text2); max-width: 600px; margin-bottom: 32px; line-height: 1.6; }
+    .hero-location { font-size: 0.8rem; color: var(--text2); margin-bottom: 32px; display: flex; align-items: center; gap: 6px; }
+    .hero-location::before {
+      content: ''; width: 11px; height: 11px; background: var(--red);
+      clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+      animation: ping 2s ease-out infinite;
+    }
+    @keyframes ping {
+      0%   { opacity: 1; }
+      70%  { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+    .hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
+
     .scroll-hint {
       display: flex; flex-direction: column; align-items: center; gap: 6px;
-      margin-top: 28px; opacity: 0; animation: hint-in 1s ease 1.8s forwards;
+      margin-top: 40px; opacity: 0; animation: hint-in 1s ease 2.9s forwards;
     }
     .scroll-hint span { font-size: 0.75rem; color: var(--text2); letter-spacing: 0.06em; text-transform: uppercase; }
     .scroll-hint-arrow {
-      width: 18px; height: 18px; border-right: 2px solid var(--text2);
-      border-bottom: 2px solid var(--text2); transform: rotate(45deg);
-      animation: bounce-down 1.4s ease-in-out 1.8s infinite;
+      width: 18px; height: 18px; border-right: 2px solid var(--red);
+      border-bottom: 2px solid var(--red); transform: rotate(45deg);
+      animation: bounce-down 1.4s ease-in-out 2.9s infinite;
+      filter: drop-shadow(0 0 6px var(--glow));
     }
     @keyframes hint-in { to { opacity: 1; } }
     @keyframes bounce-down {
@@ -140,148 +376,213 @@
       50%       { transform: rotate(45deg) translateY(5px); }
     }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: color-mix(in srgb, var(--bg) 88%, transparent);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px; height: 56px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .nav-left { display: flex; align-items: center; gap: 32px; }
-    .nav-name { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
-    .nav-name span { color: var(--red); }
-    .nav-links { display: flex; gap: 28px; list-style: none; }
-    .nav-links a { font-size: 0.85rem; color: var(--text2); text-decoration: none; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--text); }
-    .nav-right { display: flex; align-items: center; gap: 10px; }
-    .theme-btn {
-      background: var(--bg3); border: 1px solid var(--border);
-      color: var(--text2); cursor: pointer; border-radius: 6px;
-      padding: 5px 10px; font-size: 0.8rem; transition: all 0.15s; line-height: 1;
-    }
-    .theme-btn:hover { color: var(--text); border-color: var(--border2); }
-    .nav-toggle {
-      display: none; background: none; border: none; cursor: pointer;
-      flex-direction: column; gap: 5px; padding: 4px;
-    }
-    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); transition: all 0.2s; }
-
-    /* ── LAYOUT ── */
-    section { padding: 48px 24px; max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
-    section + section { padding-top: 28px; }
-    h2 {
-      font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em;
-      margin-bottom: 32px; color: var(--text);
-      display: flex; align-items: center; gap: 10px;
-    }
-    h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    /* ── HERO ── */
-    #hero { padding-top: 100px; padding-bottom: 20px; max-width: 860px; margin: 0 auto; }
-    .hero-name {
-      font-size: clamp(2.4rem, 6vw, 3.8rem);
-      font-weight: 800; letter-spacing: -0.04em;
-      line-height: 1.1; margin-bottom: 20px; color: var(--text);
-    }
-    .hero-name .dot { color: var(--red); animation: pulse-dot 2.5s ease-in-out infinite; }
-    @keyframes pulse-dot {
-      0%, 100% { text-shadow: 0 0 8px rgba(220,38,38,0.5); }
-      50%       { text-shadow: 0 0 20px rgba(220,38,38,1), 0 0 40px rgba(220,38,38,0.4); }
-    }
-    .hero-tagline { font-size: clamp(1.05rem, 2.5vw, 1.25rem); color: var(--text); max-width: 600px; margin-bottom: 12px; line-height: 1.5; }
-    .hero-sub { font-size: 0.875rem; color: var(--text2); max-width: 600px; margin-bottom: 20px; line-height: 1.6; }
-    .hero-location { font-size: 0.8rem; color: var(--text2); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
-    .hero-location::before { content: '◎'; color: var(--red); font-size: 0.7rem; }
-    .hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
-
     /* ── BUTTONS ── */
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 9px 18px; border-radius: 6px;
       font-size: 0.85rem; font-weight: 500; text-decoration: none;
-      transition: all 0.15s; cursor: pointer; border: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.15s, border-color 0.15s, background 0.15s;
+      cursor: pointer; border: none;
+      position: relative; overflow: hidden; will-change: transform;
     }
+    .btn::before {
+      content: ''; position: absolute; top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(100deg, transparent, var(--shine), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.5s ease;
+    }
+    .btn:hover::before { left: 130%; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0) scale(0.97); }
     .btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
-    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:hover { opacity: 0.85; box-shadow: 0 6px 24px -6px color-mix(in srgb, var(--btn-bg) 50%, transparent); }
     .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn-outline:hover { border-color: var(--border2); }
+    .btn-outline:hover { border-color: var(--red); box-shadow: 0 0 16px -4px var(--glow); }
     .btn-red { background: var(--red); color: #fff; }
-    .btn-red:hover { background: #b91c1c; }
+    .btn-red:hover { background: #b91c1c; box-shadow: 0 6px 28px -6px var(--red); }
+
+    /* ── CARDS (shared glass + glow treatment) ── */
+    .service-card, .project-card, .skill-group, #more .card, .contact-box,
+    .achievement-card, .win-card, .exp-card {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      position: relative;
+      transition: border-color 0.25s, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .glow-card::after {
+      content: ''; position: absolute; inset: 0; border-radius: inherit;
+      background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--glow), transparent 65%);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .glow-card:hover::after { opacity: 1; }
 
     /* ── ABOUT ── */
     #about p { color: var(--text2); margin-bottom: 16px; font-size: 0.975rem; max-width: 720px; }
-    #about p:last-child { margin-bottom: 0; }
-    #about ul { list-style: none; margin: 4px 0 20px; display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
-    #about ul li { color: var(--text2); font-size: 0.975rem; padding-left: 20px; position: relative; }
-    #about ul li::before { content: "→"; color: var(--red); position: absolute; left: 0; }
+    #about ul { list-style: none; margin: 0 0 16px; display: flex; flex-direction: column; gap: 8px; max-width: 720px; }
+    #about ul li { font-size: 0.9rem; color: var(--text2); display: flex; align-items: flex-start; gap: 10px; transition: transform 0.25s ease, color 0.25s; }
+    #about ul li:hover { transform: translateX(6px); color: var(--text); }
+    #about ul li::before { content: '→'; color: var(--red); flex-shrink: 0; font-size: 0.78rem; margin-top: 3px; }
     #about ul li strong { color: var(--text); font-weight: 600; }
-    .achievement-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
-    .achievement-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; transition: border-color 0.15s; }
-    .achievement-card:hover { border-color: var(--border2); }
-    .achievement-metric { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; color: var(--red); line-height: 1; margin-bottom: 6px; }
-    .achievement-label { font-size: 0.82rem; color: var(--text2); line-height: 1.4; }
-    @media (max-width: 768px) { .achievement-grid { grid-template-columns: repeat(2, 1fr); } }
 
-    /* ── KEY WINS ── */
-    .wins-sub { font-size: 0.85rem; color: var(--text2); margin-top: -20px; margin-bottom: 24px; font-style: italic; }
-    .win-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .win-card {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-      padding: 24px; transition: border-color 0.15s; position: relative; overflow: hidden;
-      display: flex; flex-direction: column; gap: 0;
+    .achievement-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px; margin-top: 28px;
     }
-    .win-card:hover { border-color: var(--border2); }
+    .achievement-card { border-radius: 12px; padding: 22px 18px; overflow: hidden; }
+    .achievement-card:hover { transform: translateY(-4px); border-color: var(--border2); box-shadow: 0 16px 40px -18px rgba(0,0,0,0.5); }
+    .achievement-metric {
+      font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 8px;
+      background: linear-gradient(120deg, var(--red), #f87171);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      font-variant-numeric: tabular-nums;
+    }
+    .achievement-label { font-size: 0.78rem; color: var(--text2); line-height: 1.55; }
+
+    /* ── WINS ── */
+    .wins-sub { color: var(--text2); font-size: 0.92rem; font-style: italic; margin: -18px 0 28px; }
+    .win-grid { display: flex; flex-direction: column; gap: 20px; }
+    .win-card { border-radius: 14px; padding: 28px; overflow: hidden; }
     .win-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: var(--red); opacity: 0.7;
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+      background: linear-gradient(135deg, var(--red), transparent 35%, transparent 65%, var(--red));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      opacity: 0; transition: opacity 0.4s; pointer-events: none;
     }
-    .win-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--red); margin-bottom: 10px; display: block; }
-    .win-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.35; letter-spacing: -0.02em; }
-    .win-card p { font-size: 0.875rem; color: var(--text2); line-height: 1.55; margin-bottom: 8px; }
+    .win-card:hover::before { opacity: 0.7; }
+    .win-tag {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #fff; background: var(--red);
+      padding: 4px 14px; margin-bottom: 14px;
+      clip-path: polygon(5% 0, 100% 6%, 96% 100%, 0 92%);
+      transform: rotate(-1.2deg);
+    }
+    .win-card h3 { font-size: 1.12rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; margin-bottom: 12px; color: var(--text); }
+    .win-stat {
+      font-size: 0.8rem; font-weight: 600; color: var(--text);
+      background: color-mix(in srgb, var(--red) 9%, var(--bg3));
+      border-left: 3px solid var(--red);
+      padding: 8px 16px; margin-bottom: 16px;
+      transform: skewX(-6deg); transform-origin: left bottom;
+    }
+    .win-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.65; margin-bottom: 12px; }
     .win-card p:last-child { margin-bottom: 0; }
-    .win-stat { font-size: 0.8rem; color: var(--text); font-weight: 600; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); line-height: 1.5; }
-    .win-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 0.82rem; font-weight: 600; color: var(--red); text-decoration: none; transition: opacity 0.15s; }
-    .win-cta:hover { opacity: 0.75; }
-    @media (max-width: 640px) { .win-grid { grid-template-columns: 1fr; } }
-
-    /* ── WHAT I DO ── */
-    .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-    .service-card { background: var(--bg2); border-radius: 10px; padding: 24px; border: 1px solid var(--border); transition: border-color 0.15s; }
-    .service-card:hover { border-color: var(--border2); }
-    .service-icon {
-      width: 38px; height: 38px; border-radius: 8px;
-      background: color-mix(in srgb, var(--red) 15%, var(--bg3));
-      color: var(--red); display: flex; align-items: center;
-      justify-content: center; font-size: 0.6rem; font-weight: 800;
-      letter-spacing: 0.03em; margin-bottom: 14px;
-      font-family: ui-monospace, "SF Mono", Menlo, monospace;
-      transition: transform 0.6s ease;
+    .win-cta {
+      display: inline-block; margin-top: 4px; font-size: 0.82rem; font-weight: 600;
+      color: var(--red); text-decoration: none; border-bottom: 1px solid transparent;
+      transition: border-color 0.2s, text-shadow 0.2s;
     }
-    .service-card:hover .service-icon { transform: rotate(360deg); }
-    .service-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--text); letter-spacing: -0.01em; }
-    .service-card p { font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
+    .win-cta:hover { border-color: var(--red); text-shadow: 0 0 14px var(--glow); }
 
-    /* ── EXPERIENCE ── */
-    .exp-item { margin-bottom: 40px; }
+    /* horizontal deck mode (desktop) — vertical scroll drives the cards sideways */
+    #wins.deck-on { max-width: none; padding: 0; }
+    #wins.deck-on .wins-sticky {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      overflow: hidden;
+    }
+    .wins-head { width: 100%; }
+    #wins.deck-on .wins-head { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+    #wins.deck-on .win-grid {
+      flex-direction: row; align-items: stretch; gap: 24px;
+      padding-left: max(24px, calc((100vw - 812px) / 2));
+      padding-right: 40vw;
+      will-change: transform;
+    }
+    #wins.deck-on .win-card {
+      flex: 0 0 auto; width: min(540px, 86vw);
+      max-height: calc(100vh - 240px); overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    #wins.deck-on .win-card.reveal { opacity: 1; transform: none; transition: none; }
+    .wins-progress {
+      display: none; width: min(280px, 50vw); height: 2px;
+      background: var(--border); border-radius: 2px; overflow: hidden;
+      margin: 28px auto 0;
+    }
+    #wins.deck-on .wins-progress { display: block; }
+    .wins-progress span { display: block; height: 100%; width: 0%; background: var(--red); box-shadow: 0 0 10px var(--red); }
+
+    /* ── EXPERIENCE / EDUCATION (timeline) ── */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px;
+      background: linear-gradient(180deg, var(--red), var(--border) 60%, transparent);
+      transform: scaleY(0); transform-origin: top;
+      transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+    }
+    .in-view .timeline::before { transform: scaleY(1); }
+    .exp-item { margin-bottom: 40px; position: relative; }
     .exp-item:last-child { margin-bottom: 0; }
+    .timeline .exp-item::before {
+      content: ''; position: absolute; left: -28px; top: 8px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--red); border: 2px solid var(--bg);
+      animation: dot-ping 2.5s ease-out infinite;
+    }
+    @keyframes dot-ping {
+      0%   { box-shadow: 0 0 0 0 rgba(220,38,38,0.5); }
+      70%  { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+      100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); }
+    }
     .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
     .exp-company { font-weight: 700; font-size: 1rem; color: var(--text); }
     .exp-period { font-size: 0.78rem; color: var(--text2); background: var(--bg3); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); white-space: nowrap; }
     .exp-role { font-size: 0.875rem; color: var(--red); margin-bottom: 12px; font-weight: 500; }
     .exp-desc { font-size: 0.875rem; color: var(--text2); margin-bottom: 14px; }
     .exp-highlights { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .exp-highlights li { font-size: 0.85rem; color: var(--text2); display: flex; align-items: flex-start; gap: 8px; }
+    .exp-highlights li { font-size: 0.85rem; color: var(--text2); display: flex; align-items: flex-start; gap: 8px; transition: transform 0.25s ease, color 0.25s; }
+    .exp-highlights li:hover { transform: translateX(6px); color: var(--text); }
     .exp-highlights li::before { content: '→'; color: var(--red); flex-shrink: 0; font-size: 0.75rem; margin-top: 3px; }
-    .exp-divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    /* ── WHAT I DO ── */
+    .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; perspective: 1200px; }
+    .service-card { border-radius: 10px; padding: 24px; transform-style: preserve-3d; will-change: transform; }
+    .service-card:hover { border-color: var(--border2); box-shadow: 0 16px 40px -16px rgba(0,0,0,0.5); }
+    .service-icon {
+      width: 38px; height: 38px; border-radius: 4px;
+      background: color-mix(in srgb, var(--red) 15%, var(--bg3));
+      color: var(--red); display: flex; align-items: center;
+      justify-content: center; font-size: 0.6rem; font-weight: 800;
+      letter-spacing: 0.03em; margin-bottom: 14px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, background 0.3s, color 0.3s;
+      transform: translateZ(24px) skewX(-8deg);
+    }
+    .service-card:hover .service-icon {
+      transform: translateZ(40px) skewX(-8deg) rotate(360deg);
+      background: var(--red); color: #fff;
+      box-shadow: 0 0 20px -2px var(--glow), 3px 3px 0 color-mix(in srgb, var(--text) 22%, transparent);
+    }
+    .service-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--text); letter-spacing: -0.01em; transform: translateZ(16px); }
+    .service-card p { font-size: 0.8rem; color: var(--text2); line-height: 1.6; transform: translateZ(8px); }
 
     /* ── PROJECTS ── */
-    .project-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; transition: border-color 0.15s; }
+    .project-card { border-radius: 12px; padding: 28px; margin-bottom: 20px; overflow: hidden; }
     .project-card:last-child { margin-bottom: 0; }
-    .project-card:hover { border-color: var(--border2); }
-    .project-tag { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+    .project-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+      background: linear-gradient(135deg, var(--red), transparent 35%, transparent 65%, var(--red));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      opacity: 0; transition: opacity 0.4s; pointer-events: none;
+    }
+    .project-card:hover::before { opacity: 0.7; }
+    .project-card:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 24px 48px -20px rgba(0,0,0,0.55); }
+    .project-tag {
+      display: inline-block; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: #fff; background: var(--red);
+      padding: 4px 14px; margin-bottom: 12px;
+      clip-path: polygon(4% 0, 100% 8%, 95% 100%, 0 94%);
+      transform: rotate(-1deg);
+    }
     .project-card h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text); }
     .project-card p { font-size: 0.875rem; color: var(--text2); margin-bottom: 14px; line-height: 1.65; }
     .project-card ul { list-style: none; margin-bottom: 18px; }
@@ -291,53 +592,114 @@
 
     /* ── SKILLS ── */
     .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-    .skill-group { background: var(--bg2); border-radius: 10px; padding: 20px; border: 1px solid var(--border); }
+    .skill-group { border-radius: 10px; padding: 20px; }
+    .skill-group:hover { border-color: var(--border2); transform: translateY(-3px); }
     .skill-group h3 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--red); margin-bottom: 12px; }
     .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .skill-tag { font-size: 0.75rem; padding: 3px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; color: var(--text2); }
+    .skill-tag {
+      font-size: 0.75rem; padding: 3px 10px; background: var(--bg3);
+      border: 1px solid var(--border); border-radius: 20px; color: var(--text2);
+      transition: all 0.2s ease;
+    }
+    .skill-tag:hover {
+      border-color: var(--red); color: var(--text);
+      transform: translateY(-2px) scale(1.05) skewX(-8deg);
+      box-shadow: 0 4px 14px -4px var(--glow);
+    }
+
+    /* ── EDUCATION ── */
+    .exp-card { border-radius: 12px; padding: 24px 28px; }
+    .exp-card:hover { border-color: var(--border2); transform: translateY(-3px); }
 
     /* ── MORE ── */
-    #more .card { background: var(--bg2); border-radius: 12px; padding: 28px; border: 1px solid var(--border); }
+    #more .card { border-radius: 12px; padding: 28px; }
     #more p { font-size: 0.95rem; color: var(--text2); max-width: 680px; line-height: 1.7; }
 
     /* ── CONTACT ── */
     #contact { padding-bottom: 80px; }
-    .contact-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center; }
-    .contact-box h3 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; color: var(--text); }
-    .contact-box p { font-size: 0.9rem; color: var(--text2); margin-bottom: 28px; max-width: 460px; margin-inline: auto; }
-    .contact-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .contact-box { border-radius: 12px; padding: 48px 40px; text-align: center; overflow: hidden; }
+    .contact-box::before {
+      content: ''; position: absolute; top: -60%; left: 50%; transform: translateX(-50%);
+      width: 480px; height: 480px; border-radius: 50%;
+      background: radial-gradient(circle, var(--glow), transparent 70%);
+      pointer-events: none; animation: breathe 5s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50%      { opacity: 1;   transform: translateX(-50%) scale(1.15); }
+    }
+    .contact-box h3 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; color: var(--text); position: relative; }
+    .contact-box p { font-size: 0.9rem; color: var(--text2); margin-bottom: 28px; max-width: 460px; margin-inline: auto; position: relative; }
+    .contact-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; }
 
     /* ── FOOTER ── */
     footer { border-top: 1px solid var(--border); padding: 20px 24px; text-align: center; font-size: 0.78rem; color: var(--text2); position: relative; z-index: 1; }
 
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      #loader { display: none; }
+      .reveal, .hero-line, .scroll-hint { opacity: 1; transform: none; }
+      html { scroll-behavior: auto; }
+      body, body a, body button { cursor: auto; }
+      .cursor-dot, .cursor-ring { display: none !important; }
+    }
+
     /* ── MOBILE ── */
-    @media (max-width: 640px) {
-      nav { padding: 0 16px; }
-      .nav-links { display: none; flex-direction: column; gap: 0; }
+    @media (max-width: 1080px) {
       .nav-links.open {
-        display: flex; position: fixed; top: 56px; left: 0; right: 0;
+        display: flex; flex-direction: column; gap: 0;
+        position: fixed; top: 56px; left: 0; right: 0;
         background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 0;
+        animation: menu-drop 0.25s ease;
+      }
+      @keyframes menu-drop {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
       .nav-links.open a { display: block; padding: 12px 24px; font-size: 0.95rem; }
-      .nav-toggle { display: flex; }
-      #hero { padding: 84px 16px 16px; }
-      section { padding: 36px 16px; }
+      .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .nav-toggle.open span:nth-child(2) { opacity: 0; }
+      .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    }
+    @media (max-width: 640px) {
+      nav { padding: 0 16px; }
+      #hero { padding: 96px 16px 44px; }
+      section { padding: 44px 16px; }
       .service-grid, .skills-grid { grid-template-columns: 1fr; }
       .exp-header { flex-direction: column; }
       .contact-box { padding: 28px 20px; }
+      .timeline { padding-left: 22px; }
+      .timeline .exp-item::before { left: -22px; }
     }
   </style>
+  <noscript><style>#loader { display: none; }</style></noscript>
 </head>
-<body>
+<body class="loading">
+
+  <div id="loader" aria-hidden="true">
+    <div class="loader-name"><span id="loader-text"></span><span class="ldot">.</span></div>
+    <div class="loader-line"><span id="loader-fill"></span></div>
+  </div>
 
   <div id="scroll-bar"></div>
-  <canvas id="bg-canvas"></canvas>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <div class="orb orb-4"></div>
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
 
-  <nav>
+  <canvas id="bg-canvas"></canvas>
+  <div class="orb-layer" id="orb-layer">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+  </div>
+  <div class="noise"></div>
+
+  <nav id="nav">
     <div class="nav-left">
       <a href="#hero" class="nav-name">Aditya<span>.</span></a>
       <ul class="nav-links" id="nav-links">
@@ -361,15 +723,17 @@
   </nav>
 
   <section id="hero">
-    <h1 class="hero-name">Aditya Srinivasa<span class="dot">.</span></h1>
-    <p class="hero-tagline">I make complex technology feel inevitable to the people who need to use it.</p>
-    <p class="hero-sub">Pre-Sales Specialist · Solutions Engineer · API Security · Observability · Builder of things that probably shouldn't work but do.</p>
-    <p class="hero-location">Bengaluru, India ; APAC/SEA</p>
-    <div class="hero-links">
-      <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn</a>
-      <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
-      <a href="mailto:adityasrinivasa31@gmail.com" class="btn btn-red">Email me</a>
-      <a href="tel:+917619628020" class="btn btn-outline" onclick="handlePhoneClick(event, this)">+91-7619628020</a>
+    <div class="hero-line hero-name-wrap" style="--hd: 0s">
+      <h1 class="hero-name"><span class="name-text">Aditya Srinivasa</span><span class="dot">.</span></h1>
+    </div>
+    <p class="hero-tagline hero-line" style="--hd: 0.15s">I make complex technology feel inevitable to the people who need to use it.</p>
+    <p class="hero-sub hero-line" style="--hd: 0.3s">Pre-Sales Specialist · Solutions Engineer · API Security · Observability · Builder of things that probably shouldn't work but do.</p>
+    <p class="hero-location hero-line" style="--hd: 0.45s">Bengaluru, India ; APAC/SEA</p>
+    <div class="hero-links hero-line" style="--hd: 0.6s">
+      <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary magnetic">LinkedIn</a>
+      <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline magnetic">GitHub</a>
+      <a href="mailto:adityasrinivasa31@gmail.com" class="btn btn-red magnetic">Email me</a>
+      <a href="tel:+917619628020" class="btn btn-outline magnetic" onclick="handlePhoneClick(event, this)">+91-7619628020</a>
     </div>
     <div class="scroll-hint" id="scroll-hint">
       <span>Scroll to explore</span>
@@ -379,9 +743,9 @@
 
   <section id="about">
     <h2>About</h2>
-    <p>I'm a Pre-Sales Specialist and Solutions Engineer with 3+ years at Rakuten SixthSense, where I've served as the primary SE for all of APAC and India — managing a $1.5M+ target pipeline across Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, and the Philippines simultaneously. I've run discovery sessions, technical demos, and POC discussions for some of the region's most recognisable institutions: central banking authorities, national carriers, national telcos, national payments infrastructure providers, leading healthtech platforms, and defence and engineering conglomerates.</p>
-    <p>Here's what the last 3+ years have actually looked like:</p>
-    <ul>
+    <p class="reveal">I'm a Pre-Sales Specialist and Solutions Engineer with 3+ years at Rakuten SixthSense, where I've served as the primary SE for all of APAC and India — managing a $1.5M+ target pipeline across Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, and the Philippines simultaneously. I've run discovery sessions, technical demos, and POC discussions for some of the region's most recognisable institutions: central banking authorities, national carriers, national telcos, national payments infrastructure providers, leading healthtech platforms, and defence and engineering conglomerates.</p>
+    <p class="reveal" style="--d: 0.08s">Here's what the last 3+ years have actually looked like:</p>
+    <ul class="reveal" style="--d: 0.16s">
       <li>Sole SE supporting all of APAC/SEA, part of the India Pre-Sales team — <strong>50+ active enterprise engagements</strong> across 9 countries in the last year alone</li>
       <li><strong>$1.5M+ target pipeline</strong> managed across Southeast Asia and India simultaneously</li>
       <li><strong>20+ enterprise POCs owned end-to-end</strong> with ~80% conversion rate — across enterprise, mid-market, and government sectors</li>
@@ -392,21 +756,21 @@
       <li>Authored and maintained <strong>technical documentation</strong> (Docusaurus) for API Security and Data Observability products</li>
       <li>Delivered <strong>5–6 technical workshops</strong> at public defence organisations, national space agencies, international banks, and international security and data companies</li>
     </ul>
-    <p>I'm not a pure salesperson and I'm not a pure engineer. I'm the person who gets called when the customer is stuck, the demo isn't landing, or nobody can agree on what the product actually does. I figure it out.</p>
+    <p class="reveal" style="--d: 0.24s">I'm not a pure salesperson and I'm not a pure engineer. I'm the person who gets called when the customer is stuck, the demo isn't landing, or nobody can agree on what the product actually does. I figure it out.</p>
     <div class="achievement-grid">
-      <div class="achievement-card">
+      <div class="achievement-card glow-card reveal">
         <div class="achievement-metric">$1.5M+</div>
         <div class="achievement-label">Target pipeline managed across APAC and India as the sole SE for the region</div>
       </div>
-      <div class="achievement-card">
+      <div class="achievement-card glow-card reveal" style="--d: 0.08s">
         <div class="achievement-metric">9</div>
         <div class="achievement-label">Countries covered — Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, Philippines, India, and UK</div>
       </div>
-      <div class="achievement-card">
+      <div class="achievement-card glow-card reveal" style="--d: 0.16s">
         <div class="achievement-metric">~80%</div>
         <div class="achievement-label">POC conversion rate across 20+ enterprise proof-of-concepts owned end-to-end</div>
       </div>
-      <div class="achievement-card">
+      <div class="achievement-card glow-card reveal" style="--d: 0.24s">
         <div class="achievement-metric">&lt;2 Wks</div>
         <div class="achievement-label">To build and ship a custom telemetry agent that saved a $200K+ account from falling through</div>
       </div>
@@ -414,123 +778,129 @@
   </section>
 
   <section id="wins">
-    <h2>Wins</h2>
-    <p class="wins-sub">Not a list of responsibilities. Actual things that happened.</p>
-    <div class="win-grid">
-
-      <div class="win-card">
-        <span class="win-tag">Government · Enterprise Deal</span>
-        <h3>Closed a $200K contract with India's largest government organisation</h3>
-        <div class="win-stat">$200K · India's largest government organisation · Zero shortcuts.</div>
-        <p>Led the full pre-sales motion — discovery, technical demo, POC, and commercial negotiation support — for a full-stack observability deployment inside one of India's most security-constrained environments. Stood up the Kubernetes cluster from scratch, coordinated platform deployment with engineering, and installed agents across air-gapped infrastructure. Delivered the final technical demo to stakeholders spanning public defence and space organisations months later, after navigating one of the longest and most security-constrained procurement cycles I've worked through.</p>
-        <p>Getting to close here isn't about pressure. It's about technical precision, patience, and keeping a deal warm across a long, non-linear cycle.</p>
+    <div class="wins-sticky">
+      <div class="wins-head">
+        <h2>Wins</h2>
+        <p class="wins-sub">Not a list of responsibilities. Actual things that happened.</p>
       </div>
+      <div class="win-grid" id="win-grid">
 
-      <div class="win-card">
-        <span class="win-tag">Delivery · Operational Impact</span>
-        <h3>Cut enterprise on-premises deployment time from weeks to days</h3>
-        <div class="win-stat">Before: 2 weeks–2 months. After: 1–2 days. · $100K deal closed faster because the technical delivery didn't slow it down.</div>
-        <p>Identified repeated friction in on-premises deployments that was destroying POC timelines and post-sale onboarding. The variance was brutal — best case two weeks, worst case two months. That kind of unpredictability kills deal momentum and gives prospects time to lose confidence.</p>
-        <p>Systematised the entire process from scratch. Built reusable runbooks, environment checklists, and troubleshooting guides — turning what had been ad hoc into something repeatable and fast. One enterprise banking customer specifically cited the speed and quality of their deployment as a key reason for their decision.</p>
+        <div class="win-card glow-card reveal">
+          <span class="win-tag">Government · Enterprise Deal</span>
+          <h3>Closed a $200K contract with India's largest government organisation</h3>
+          <div class="win-stat">$200K · India's largest government organisation · Zero shortcuts.</div>
+          <p>Led the full pre-sales motion — discovery, technical demo, POC, and commercial negotiation support — for a full-stack observability deployment inside one of India's most security-constrained environments. Stood up the Kubernetes cluster from scratch, coordinated platform deployment with engineering, and installed agents across air-gapped infrastructure. Delivered the final technical demo to stakeholders spanning public defence and space organisations months later, after navigating one of the longest and most security-constrained procurement cycles I've worked through.</p>
+          <p>Getting to close here isn't about pressure. It's about technical precision, patience, and keeping a deal warm across a long, non-linear cycle.</p>
+        </div>
+
+        <div class="win-card glow-card reveal" style="--d: 0.08s">
+          <span class="win-tag">Delivery · Operational Impact</span>
+          <h3>Cut enterprise on-premises deployment time from weeks to days</h3>
+          <div class="win-stat">Before: 2 weeks–2 months. After: 1–2 days. · $100K deal closed faster because the technical delivery didn't slow it down.</div>
+          <p>Identified repeated friction in on-premises deployments that was destroying POC timelines and post-sale onboarding. The variance was brutal — best case two weeks, worst case two months. That kind of unpredictability kills deal momentum and gives prospects time to lose confidence.</p>
+          <p>Systematised the entire process from scratch. Built reusable runbooks, environment checklists, and troubleshooting guides — turning what had been ad hoc into something repeatable and fast. One enterprise banking customer specifically cited the speed and quality of their deployment as a key reason for their decision.</p>
+        </div>
+
+        <div class="win-card glow-card reveal" style="--d: 0.16s">
+          <span class="win-tag">Engineering · Deal Save</span>
+          <h3>Built a custom telemetry agent in under 2 weeks to save a $200K+ account</h3>
+          <div class="win-stat">Under 2 weeks · Zero escalations · $200K+ account retained.</div>
+          <p>A critical client-side instrumentation blocker was threatening to derail a major account. The backend team couldn't unblock it on the timeline needed. Waiting wasn't an option.</p>
+          <p>Diagnosed the root cause, wrote the agent, tested it, and shipped it to production — in under two weeks, without backend team dependency, without escalation. The deal was saved. The account stayed. The blocker became a runbook.</p>
+        </div>
+
+        <div class="win-card glow-card reveal" style="--d: 0.24s">
+          <span class="win-tag">APAC · Market Development</span>
+          <h3>Sole SE for all of APAC — 50+ enterprise engagements across 9 countries</h3>
+          <div class="win-stat">$1.5M+ target pipeline · 9 countries · 50+ active enterprise engagements across APAC.</div>
+          <p>Served as the primary Solutions Engineer for all of Southeast Asia and India simultaneously — managing a $1.5M+ target pipeline spanning Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, and the Philippines. Ran discovery, demos, and POC discussions for some of the region's most recognisable institutions: central banking authorities, national carriers, national telcos, national payments infrastructure providers, leading healthtech platforms, and defence and engineering conglomerates.</p>
+          <p>Adapted technical positioning across wildly different industries, regulatory contexts, and digital maturity levels — from regulated financial institutions to government bodies to high-growth startups — across 9 countries in a single role. Built partner relationships with system integrators and resellers across Malaysia, Sri Lanka, Singapore, and Indonesia to extend reach into markets where direct access was limited.</p>
+        </div>
+
+        <div class="win-card glow-card reveal" style="--d: 0.32s">
+          <span class="win-tag">Product · Roadmap Influence</span>
+          <h3>Shaped the product roadmap — three times</h3>
+          <div class="win-stat">15+ gaps surfaced · 3 prioritised to roadmap · Customer frustration → shipped product.</div>
+          <p>Being in the field means seeing things the product team doesn't. Customer frustrations that don't make it into support tickets. Competitive gaps that only surface during live comparison demos. Friction that compounds across every POC.</p>
+          <p>Surfaced 15+ product gaps by synthesising direct customer feedback from across India and SEA, competitive analysis across Datadog, Splunk, Elastic, and Grafana Loki, and patterns emerging across engagements in 9 countries. Three of those gaps were prioritised by Engineering and Product into the active roadmap — bridging the distance between what customers actually need and what the product ships.</p>
+        </div>
+
+        <div class="win-card glow-card reveal" style="--d: 0.4s">
+          <span class="win-tag">Speaking · Technical Workshops</span>
+          <h3>Delivered technical workshops across defence, space, banking, and security organisations</h3>
+          <div class="win-stat">5–6 workshops · Public defence & space organisations · International banks & security companies.</div>
+          <p>5–6 workshops and seminars on observability, AI, and enterprise technology — delivered to some of India's most technically rigorous audiences including public defence organisations, national space agencies, international banks, and international security and data companies.</p>
+          <p>These aren't sales pitches. They're technical sessions where people push back and you have to know your stuff.</p>
+          <a href="https://youtu.be/jiiGncnsYJo" target="_blank" rel="noopener" class="win-cta">▶ Watch: Cognitive AI — Streamlining Alert Management for Operational Excellence</a>
+        </div>
+
       </div>
-
-      <div class="win-card">
-        <span class="win-tag">Engineering · Deal Save</span>
-        <h3>Built a custom telemetry agent in under 2 weeks to save a $200K+ account</h3>
-        <div class="win-stat">Under 2 weeks · Zero escalations · $200K+ account retained.</div>
-        <p>A critical client-side instrumentation blocker was threatening to derail a major account. The backend team couldn't unblock it on the timeline needed. Waiting wasn't an option.</p>
-        <p>Diagnosed the root cause, wrote the agent, tested it, and shipped it to production — in under two weeks, without backend team dependency, without escalation. The deal was saved. The account stayed. The blocker became a runbook.</p>
-      </div>
-
-      <div class="win-card">
-        <span class="win-tag">APAC · Market Development</span>
-        <h3>Sole SE for all of APAC — 50+ enterprise engagements across 9 countries</h3>
-        <div class="win-stat">$1.5M+ target pipeline · 9 countries · 50+ active enterprise engagements across APAC.</div>
-        <p>Served as the primary Solutions Engineer for all of Southeast Asia and India simultaneously — managing a $1.5M+ target pipeline spanning Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, and the Philippines. Ran discovery, demos, and POC discussions for some of the region's most recognisable institutions: central banking authorities, national carriers, national telcos, national payments infrastructure providers, leading healthtech platforms, and defence and engineering conglomerates.</p>
-        <p>Adapted technical positioning across wildly different industries, regulatory contexts, and digital maturity levels — from regulated financial institutions to government bodies to high-growth startups — across 9 countries in a single role. Built partner relationships with system integrators and resellers across Malaysia, Sri Lanka, Singapore, and Indonesia to extend reach into markets where direct access was limited.</p>
-      </div>
-
-      <div class="win-card">
-        <span class="win-tag">Product · Roadmap Influence</span>
-        <h3>Shaped the product roadmap — three times</h3>
-        <div class="win-stat">15+ gaps surfaced · 3 prioritised to roadmap · Customer frustration → shipped product.</div>
-        <p>Being in the field means seeing things the product team doesn't. Customer frustrations that don't make it into support tickets. Competitive gaps that only surface during live comparison demos. Friction that compounds across every POC.</p>
-        <p>Surfaced 15+ product gaps by synthesising direct customer feedback from across India and SEA, competitive analysis across Datadog, Splunk, Elastic, and Grafana Loki, and patterns emerging across engagements in 9 countries. Three of those gaps were prioritised by Engineering and Product into the active roadmap — bridging the distance between what customers actually need and what the product ships.</p>
-      </div>
-
-      <div class="win-card">
-        <span class="win-tag">Speaking · Technical Workshops</span>
-        <h3>Delivered technical workshops across defence, space, banking, and security organisations</h3>
-        <div class="win-stat">5–6 workshops · Public defence & space organisations · International banks & security companies.</div>
-        <p>5–6 workshops and seminars on observability, AI, and enterprise technology — delivered to some of India's most technically rigorous audiences including public defence organisations, national space agencies, international banks, and international security and data companies.</p>
-        <p>These aren't sales pitches. They're technical sessions where people push back and you have to know your stuff.</p>
-        <a href="https://youtu.be/jiiGncnsYJo" target="_blank" rel="noopener" class="win-cta">▶ Watch: Cognitive AI — Streamlining Alert Management for Operational Excellence</a>
-      </div>
-
+      <div class="wins-progress" aria-hidden="true"><span id="wins-progress-fill"></span></div>
     </div>
   </section>
 
   <section id="experience">
     <h2>Experience</h2>
-    <div class="exp-item">
-      <div class="exp-header">
-        <span class="exp-company">Rakuten SixthSense</span>
-        <span class="exp-period">Jan 2023 – Present</span>
+    <div class="timeline">
+      <div class="exp-item reveal">
+        <div class="exp-header">
+          <span class="exp-company">Rakuten SixthSense</span>
+          <span class="exp-period">Jan 2023 – Present</span>
+        </div>
+        <div class="exp-role">Pre-Sales Specialist (Apr 2026 – Present) · Pre-Sales Consultant (Jan 2023 – Mar 2026)</div>
+        <p class="exp-desc">Enterprise observability and security platform. Joined as Pre-Sales Consultant, promoted to Specialist in recognition of delivery impact and customer outcomes. Served as the primary SE for all of APAC and India across three product lines: Full Stack Observability (APM/AIOps), Data Observability, and API Security.</p>
+        <ul class="exp-highlights">
+          <li>Sole SE for APAC and India — managed $1.5M+ target pipeline across 9 countries simultaneously</li>
+          <li>50+ active enterprise engagements across Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, Philippines, and India</li>
+          <li>Ran demos and POC discussions for central banking authorities, national carriers, national telcos, national payments providers, leading healthtech platforms, and defence conglomerates across SEA</li>
+          <li>20+ enterprise POCs owned end-to-end with ~80% conversion rate</li>
+          <li>$1M+ in revenue influenced through technical delivery and customer trust</li>
+          <li>Custom telemetry agent built and shipped in under 2 weeks, saving a $200K+ account</li>
+          <li>15+ product gaps surfaced to Engineering and Product, influencing 3 roadmap priorities</li>
+          <li>Technical documentation authored and maintained via Docusaurus for API Security and Data Observability</li>
+          <li>Built partner relationships with system integrators and resellers across Malaysia, Sri Lanka, Singapore, and Indonesia</li>
+        </ul>
       </div>
-      <div class="exp-role">Pre-Sales Specialist (Apr 2026 – Present) · Pre-Sales Consultant (Jan 2023 – Mar 2026)</div>
-      <p class="exp-desc">Enterprise observability and security platform. Joined as Pre-Sales Consultant, promoted to Specialist in recognition of delivery impact and customer outcomes. Served as the primary SE for all of APAC and India across three product lines: Full Stack Observability (APM/AIOps), Data Observability, and API Security.</p>
-      <ul class="exp-highlights">
-        <li>Sole SE for APAC and India — managed $1.5M+ target pipeline across 9 countries simultaneously</li>
-        <li>50+ active enterprise engagements across Singapore, Malaysia, Indonesia, Thailand, Sri Lanka, Vietnam, Philippines, and India</li>
-        <li>Ran demos and POC discussions for central banking authorities, national carriers, national telcos, national payments providers, leading healthtech platforms, and defence conglomerates across SEA</li>
-        <li>20+ enterprise POCs owned end-to-end with ~80% conversion rate</li>
-        <li>$1M+ in revenue influenced through technical delivery and customer trust</li>
-        <li>Custom telemetry agent built and shipped in under 2 weeks, saving a $200K+ account</li>
-        <li>15+ product gaps surfaced to Engineering and Product, influencing 3 roadmap priorities</li>
-        <li>Technical documentation authored and maintained via Docusaurus for API Security and Data Observability</li>
-        <li>Built partner relationships with system integrators and resellers across Malaysia, Sri Lanka, Singapore, and Indonesia</li>
-      </ul>
-    </div>
-    <hr class="exp-divider">
-    <div class="exp-item">
-      <div class="exp-header">
-        <span class="exp-company">Sasken Technologies Ltd.</span>
-        <span class="exp-period">Jun 2022 – Jul 2022</span>
+      <div class="exp-item reveal" style="--d: 0.15s">
+        <div class="exp-header">
+          <span class="exp-company">Sasken Technologies Ltd.</span>
+          <span class="exp-period">Jun 2022 – Jul 2022</span>
+        </div>
+        <div class="exp-role">Data Engineering Intern</div>
+        <p class="exp-desc">Built ETL pipelines using Hadoop and Apache Spark to process and transform large-scale datasets. Delivered Microsoft Power BI dashboards surfacing actionable business insights for internal stakeholders.</p>
       </div>
-      <div class="exp-role">Data Engineering Intern</div>
-      <p class="exp-desc">Built ETL pipelines using Hadoop and Apache Spark to process and transform large-scale datasets. Delivered Microsoft Power BI dashboards surfacing actionable business insights for internal stakeholders.</p>
     </div>
   </section>
 
   <section id="work">
     <h2>What I Do</h2>
     <div class="service-grid">
-      <div class="service-card">
+      <div class="service-card glow-card tilt reveal">
         <div class="service-icon">PS</div>
         <h3>Pre-Sales & Solutions Engineering</h3>
         <p>End-to-end POC ownership, demo delivery, solution design, RFP responses. I've been the primary SE for all of APAC and India — adapting technical positioning across 9 countries, wildly different industries, and C-suite stakeholders from central banking authorities to high-growth startups. I partner with sales to be the most useful technical person in the room, wherever that room happens to be.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card glow-card tilt reveal" style="--d: 0.08s">
         <div class="service-icon">API</div>
         <h3>API Security</h3>
         <p>I run pre-sales for an enterprise API security platform — discovery calls, live demos, POCs, and RFP responses. I've helped customers find shadow APIs they didn't know existed, identify zombie endpoints still receiving traffic, and map their real exposure against the OWASP API Top 10. I built the technical documentation for this product and have worked deals from first call to signed contract across enterprise, government, and regulated industries.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card glow-card tilt reveal" style="--d: 0.16s">
         <div class="service-icon">OBS</div>
         <h3>Full Stack Observability</h3>
         <p>Three years owning enterprise observability POCs end-to-end. I've built multi-agent telemetry environments from scratch — real-time metrics, traces, and logs across Java, Go, and Python microservices. Once built a custom telemetry agent in under 2 weeks to save a $200K+ deal. Stack coverage: bare-metal Kubernetes (kubeadm), Istio, OpenTelemetry, Prometheus, Grafana, Jaeger, OpenSearch — including air-gapped government deployments.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card glow-card tilt reveal" style="--d: 0.24s">
         <div class="service-icon">DO</div>
         <h3>Data Observability</h3>
         <p>I help customers define what healthy data actually looks like for their stack, run POCs against real pipelines, and build the internal business case. I've run pre-sales and technical enablement across enterprise data teams — and contributed to the official product documentation, which means I understand the product at a depth that shows in customer conversations.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card glow-card tilt reveal" style="--d: 0.32s">
         <div class="service-icon">CS</div>
         <h3>Customer Success</h3>
         <p>Post-close, I stay involved. I've handled agent installs, resolved license and usage questions, answered capability deep-dives, and identified expansion opportunities across the account base in India and SEA. Several customers have expanded based on work I did after the initial deal closed. The pre-sales motion doesn't stop at signature.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card glow-card tilt reveal" style="--d: 0.4s">
         <div class="service-icon">DOC</div>
         <h3>Technical Documentation</h3>
         <p>Authored and maintained docs for API Security and Data Observability using Docusaurus. This wasn't just copywriting — I translated complex detection logic, monitoring concepts, and integration patterns into developer-friendly content for external stakeholders and partners. Writing the docs also made me a sharper engineer for both products: you can't explain something well unless you actually understand it.</p>
@@ -540,17 +910,17 @@
 
   <section id="projects">
     <h2>Projects</h2>
-    <div class="project-card">
+    <div class="project-card glow-card reveal">
       <span class="project-tag">Personal Project · AI/ML</span>
       <h3>Metal-Lyrics-GPT</h3>
       <p>A GPT built from scratch — trained on Metal lyrics instead of Shakespeare. Inspired by Andrej Karpathy's "Let's Build GPT From Scratch" and implemented entirely in Python, it's a character-level language model that starts as "I want to understand how this actually works" and ends with a model that generates surprisingly aggressive text.</p>
       <p>The comparison demo shows the model at each stage of the build — from basic bigram to full transformer blocks with attention, residual connections, and layer norm — so you can see exactly how each architectural addition improves the output.</p>
       <div class="project-links">
-        <a href="https://github.com/adityas-31/adi-gpt" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
-        <a href="https://huggingface.co/spaces/adityas-31/adi-gpt" target="_blank" rel="noopener" class="btn btn-red">Live Demo</a>
+        <a href="https://github.com/adityas-31/adi-gpt" target="_blank" rel="noopener" class="btn btn-outline magnetic">GitHub</a>
+        <a href="https://huggingface.co/spaces/adityas-31/adi-gpt" target="_blank" rel="noopener" class="btn btn-red magnetic">Live Demo</a>
       </div>
     </div>
-    <div class="project-card">
+    <div class="project-card glow-card reveal" style="--d: 0.12s">
       <span class="project-tag">Personal Project · Infrastructure</span>
       <h3>Enterprise Log Analytics Platform</h3>
       <p>Built a log analytics platform from scratch capable of handling ~1,400 logs/sec. Started from first principles — identified the core problem (noisy, overlapping log patterns making logs unreadable at scale), defined what correct output actually looks like, and built toward that.</p>
@@ -566,7 +936,7 @@
   <section id="skills">
     <h2>Skills</h2>
     <div class="skills-grid">
-      <div class="skill-group">
+      <div class="skill-group glow-card reveal">
         <h3>Pre-Sales</h3>
         <div class="skill-tags">
           <span class="skill-tag">POC Ownership</span>
@@ -582,7 +952,7 @@
           <span class="skill-tag">GTM Strategy</span>
         </div>
       </div>
-      <div class="skill-group">
+      <div class="skill-group glow-card reveal" style="--d: 0.08s">
         <h3>API Security</h3>
         <div class="skill-tags">
           <span class="skill-tag">Shadow API Discovery</span>
@@ -593,7 +963,7 @@
           <span class="skill-tag">Runtime Protection</span>
         </div>
       </div>
-      <div class="skill-group">
+      <div class="skill-group glow-card reveal" style="--d: 0.16s">
         <h3>Observability</h3>
         <div class="skill-tags">
           <span class="skill-tag">OpenTelemetry</span>
@@ -606,7 +976,7 @@
           <span class="skill-tag">Log Analytics</span>
         </div>
       </div>
-      <div class="skill-group">
+      <div class="skill-group glow-card reveal" style="--d: 0.24s">
         <h3>Infrastructure</h3>
         <div class="skill-tags">
           <span class="skill-tag">Kubernetes</span>
@@ -620,7 +990,7 @@
           <span class="skill-tag">Air-gapped Deployments</span>
         </div>
       </div>
-      <div class="skill-group">
+      <div class="skill-group glow-card reveal" style="--d: 0.32s">
         <h3>Programming</h3>
         <div class="skill-tags">
           <span class="skill-tag">Python</span>
@@ -634,7 +1004,7 @@
           <span class="skill-tag">Apache Spark</span>
         </div>
       </div>
-      <div class="skill-group">
+      <div class="skill-group glow-card reveal" style="--d: 0.4s">
         <h3>AI & Tools</h3>
         <div class="skill-tags">
           <span class="skill-tag">PyTorch</span>
@@ -650,7 +1020,7 @@
 
   <section id="education">
     <h2>Education</h2>
-    <div class="exp-item">
+    <div class="exp-item exp-card glow-card reveal">
       <div class="exp-header">
         <span class="exp-company">PES University</span>
         <span class="exp-period">2019 – 2023</span>
@@ -662,7 +1032,7 @@
 
   <section id="more">
     <h2>A Bit More</h2>
-    <div class="card">
+    <div class="card glow-card reveal">
       <p>I'm genuinely curious about how things work — not just at a surface level but all the way down. That curiosity is what got me into observability (you can't fix what you can't see), what got me interested in API security (APIs are everywhere and most people have no idea what's actually talking to what), and what made me want to build a GPT from scratch instead of just calling an API.</p>
       <br>
       <p>I game. I find mundane problems interesting. I like figuring out why something is broken more than I like the moment it's fixed. I think the best solutions are the ones that feel obvious in hindsight.</p>
@@ -673,14 +1043,14 @@
 
   <section id="contact">
     <h2>Contact</h2>
-    <div class="contact-box">
+    <div class="contact-box reveal">
       <h3>Let's talk.</h3>
       <p>Pre-sales, solutions engineering, or anything at the intersection of technical depth and customer outcomes.</p>
       <div class="contact-links">
-        <a href="mailto:adityasrinivasa31@gmail.com" class="btn btn-red">Email me</a>
-        <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn</a>
-        <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
-        <a href="tel:+917619628020" class="btn btn-outline" id="phone-btn" onclick="handlePhoneClick(event, this)">+91-7619628020</a>
+        <a href="mailto:adityasrinivasa31@gmail.com" class="btn btn-red magnetic">Email me</a>
+        <a href="https://www.linkedin.com/in/aditya-srinivasa/" target="_blank" rel="noopener" class="btn btn-primary magnetic">LinkedIn</a>
+        <a href="https://github.com/adityas-31" target="_blank" rel="noopener" class="btn btn-outline magnetic">GitHub</a>
+        <a href="tel:+917619628020" class="btn btn-outline magnetic" id="phone-btn" onclick="handlePhoneClick(event, this)">+91-7619628020</a>
       </div>
     </div>
   </section>
@@ -690,39 +1060,102 @@
   </footer>
 
   <script>
-    // theme toggle — persists across visits
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer   = window.matchMedia('(pointer: fine)').matches;
+
+    // theme toggle — persists across visits; circular wipe via View Transitions where supported
     const html    = document.documentElement;
     const themBtn = document.getElementById('theme-btn');
     const saved   = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', saved);
     themBtn.textContent = saved === 'dark' ? '☀' : '☾';
 
-    themBtn.addEventListener('click', () => {
+    themBtn.addEventListener('click', e => {
       const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-      themBtn.textContent = next === 'dark' ? '☀' : '☾';
+      const apply = () => {
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        themBtn.textContent = next === 'dark' ? '☀' : '☾';
+      };
+      if (!document.startViewTransition || reducedMotion) { apply(); return; }
+      const x = e.clientX, y = e.clientY;
+      const vt = document.startViewTransition(apply);
+      vt.ready.then(() => {
+        const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+        html.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+          { duration: 650, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' }
+        );
+      });
     });
 
     // mobile nav
     const toggle = document.getElementById('nav-toggle');
     const links  = document.getElementById('nav-links');
-    toggle.addEventListener('click', () => links.classList.toggle('open'));
-    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+    toggle.addEventListener('click', () => {
+      links.classList.toggle('open');
+      toggle.classList.toggle('open');
+    });
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      links.classList.remove('open');
+      toggle.classList.remove('open');
+    }));
 
-    // scroll progress bar + hide hint on scroll
+    // text scrambler — decodes into the original string
+    const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#%&';
+    function scramble(el, finalText, dur = 700) {
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min(1, (now - start) / dur);
+        const revealed = Math.floor(p * finalText.length);
+        let out = '';
+        for (let i = 0; i < finalText.length; i++) {
+          const ch = finalText[i];
+          out += (i < revealed || ch === ' ') ? ch
+               : SCRAMBLE_CHARS[Math.random() * SCRAMBLE_CHARS.length | 0];
+        }
+        el.textContent = out;
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = finalText;
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // intro loader — name decodes in, progress line fills, panel sweeps away
+    (function() {
+      const loader = document.getElementById('loader');
+      if (reducedMotion) {
+        document.body.classList.remove('loading');
+        loader.remove();
+        return;
+      }
+      scramble(document.getElementById('loader-text'), 'Aditya Srinivasa', 850);
+      requestAnimationFrame(() => document.getElementById('loader-fill').style.width = '100%');
+      setTimeout(() => {
+        loader.classList.add('done');
+        document.body.classList.remove('loading');
+        setTimeout(() => loader.remove(), 950);
+      }, 1350);
+    })();
+
+    // scroll progress bar + nav hide + scroll hint
     const scrollBar  = document.getElementById('scroll-bar');
     const scrollHint = document.getElementById('scroll-hint');
-    let hintHidden = false;
+    const nav = document.getElementById('nav');
+    let hintHidden = false, lastY = 0;
     window.addEventListener('scroll', () => {
-      const doc    = document.documentElement;
-      const pct    = doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100;
+      const doc = document.documentElement;
+      const y = doc.scrollTop;
+      const pct = y / (doc.scrollHeight - doc.clientHeight) * 100;
       scrollBar.style.width = pct + '%';
-      if (!hintHidden && doc.scrollTop > 40) {
+      if (!hintHidden && y > 40) {
         scrollHint.style.transition = 'opacity 0.4s';
-        scrollHint.style.opacity    = '0';
+        scrollHint.style.opacity = '0';
         hintHidden = true;
       }
+      if (y > 240 && y > lastY + 4 && !links.classList.contains('open')) nav.classList.add('hidden');
+      else if (y < lastY - 4 || y < 240) nav.classList.remove('hidden');
+      lastY = y;
     }, { passive: true });
 
     // phone copy
@@ -734,13 +1167,169 @@
       }).catch(() => {});
     }
 
-    // canvas background network
+    // scroll reveal — sections gain .in-view; .reveal elements animate in;
+    // headings and metrics decode-scramble the first time they appear
+    const revealObserver = new IntersectionObserver(entries => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        e.target.classList.add('in-view');
+        if (!reducedMotion) {
+          if (e.target.matches('section')) {
+            const h = e.target.querySelector('h2');
+            if (h && !h.dataset.done) { h.dataset.done = 1; scramble(h, h.textContent, 600); }
+          }
+          if (e.target.matches('.achievement-card')) {
+            const m = e.target.querySelector('.achievement-metric');
+            if (m && !m.dataset.done) { m.dataset.done = 1; scramble(m, m.textContent, 900); }
+          }
+        }
+        revealObserver.unobserve(e.target);
+      }
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('section, .reveal').forEach(el => revealObserver.observe(el));
+
+    // active nav link highlighting
+    const navAnchors = [...links.querySelectorAll('a')];
+    const sectionObserver = new IntersectionObserver(entries => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          navAnchors.forEach(a =>
+            a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+        }
+      }
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('section[id]').forEach(s => sectionObserver.observe(s));
+
+    // WINS DECK — vertical scroll drives the cards horizontally (desktop only)
+    const winsSection = document.getElementById('wins');
+    const winTrack    = document.getElementById('win-grid');
+    const winCards    = [...winTrack.querySelectorAll('.win-card')];
+    const winsFill    = document.getElementById('wins-progress-fill');
+    const deckMQ      = matchMedia('(min-width: 960px) and (pointer: fine)');
+    let deckOn = false, deckRange = 0, deckTop = 0, deckX = 0;
+
+    function layoutDeck() {
+      deckOn = deckMQ.matches && !reducedMotion;
+      winsSection.classList.toggle('deck-on', deckOn);
+      if (!deckOn) {
+        winsSection.style.height = '';
+        winTrack.style.transform = '';
+        winCards.forEach(c => { c.style.opacity = ''; c.style.transform = ''; });
+        return;
+      }
+      winTrack.style.transform = 'translate3d(0,0,0)';
+      deckRange = Math.max(0, winTrack.scrollWidth - innerWidth + 48);
+      winsSection.style.height = (innerHeight + deckRange) + 'px';
+      deckTop = winsSection.offsetTop;
+      deckX = Math.min(Math.max(scrollY - deckTop, 0), deckRange);
+    }
+    layoutDeck();
+    window.addEventListener('resize', layoutDeck);
+    window.addEventListener('load', layoutDeck);
+
+    (function deckLoop() {
+      if (deckOn) {
+        deckTop = winsSection.offsetTop;
+        const target = Math.min(Math.max(scrollY - deckTop, 0), deckRange);
+        deckX += (target - deckX) * 0.1;
+        winTrack.style.transform = `translate3d(${-deckX}px, 0, 0)`;
+        if (winsFill) winsFill.style.width = (deckRange ? target / deckRange * 100 : 0) + '%';
+        const vc = innerWidth / 2;
+        for (const card of winCards) {
+          const r = card.getBoundingClientRect();
+          const d = Math.abs(r.left + r.width / 2 - vc);
+          const t = Math.max(0, 1 - d / (innerWidth * 0.75));
+          card.style.opacity = (0.45 + 0.55 * t).toFixed(3);
+          card.style.transform = `scale(${(0.92 + 0.08 * t).toFixed(4)})`;
+        }
+      }
+      requestAnimationFrame(deckLoop);
+    })();
+
+    // custom cursor — dot snaps, ring trails
+    if (finePointer && !reducedMotion) {
+      const dot  = document.querySelector('.cursor-dot');
+      const ring = document.querySelector('.cursor-ring');
+      let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+      window.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.left = mx + 'px';
+        dot.style.top  = my + 'px';
+      });
+      (function trail() {
+        rx += (mx - rx) * 0.16;
+        ry += (my - ry) * 0.16;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(trail);
+      })();
+      document.querySelectorAll('a, button, .skill-tag').forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+      });
+    }
+
+    // glow cards — track mouse for the radial glow hotspot
+    document.querySelectorAll('.glow-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+
+    // 3D tilt on service cards
+    if (finePointer && !reducedMotion) {
+      document.querySelectorAll('.tilt').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width  - 0.5;
+          const py = (e.clientY - r.top)  / r.height - 0.5;
+          card.style.transform = `rotateY(${px * 10}deg) rotateX(${py * -10}deg) translateY(-2px)`;
+        });
+        card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+      });
+    }
+
+    // magnetic buttons — pull gently toward the cursor
+    if (finePointer && !reducedMotion) {
+      document.querySelectorAll('.magnetic').forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+          const r = btn.getBoundingClientRect();
+          const dx = e.clientX - (r.left + r.width / 2);
+          const dy = e.clientY - (r.top + r.height / 2);
+          btn.style.transform = `translate(${dx * 0.25}px, ${dy * 0.35}px)`;
+        });
+        btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+      });
+    }
+
+    // parallax orbs — drift opposite the mouse, sink with scroll
+    if (finePointer && !reducedMotion) {
+      const orbLayer = document.getElementById('orb-layer');
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+      window.addEventListener('mousemove', e => {
+        tx = (e.clientX / innerWidth  - 0.5) * -36;
+        ty = (e.clientY / innerHeight - 0.5) * -36;
+      });
+      (function orbLoop() {
+        cx += (tx - cx) * 0.04;
+        cy += (ty - cy) * 0.04;
+        orbLayer.style.transform = `translate(${cx}px, ${cy + window.scrollY * -0.04}px)`;
+        requestAnimationFrame(orbLoop);
+      })();
+    }
+
+    // canvas background network — nodes link to the cursor; clicks burst sparks
     (function() {
       const canvas = document.getElementById('bg-canvas');
       const ctx = canvas.getContext('2d');
       const NODE_COUNT = 55;
       const CONNECT_DIST = 140;
+      const MOUSE_DIST = 220;
       let nodes = [];
+      let sparks = [];
+      let mouse = { x: -9999, y: -9999 };
       let isDark = document.documentElement.getAttribute('data-theme') !== 'light';
 
       function resize() {
@@ -749,6 +1338,22 @@
       }
       resize();
       window.addEventListener('resize', resize);
+      window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+      window.addEventListener('mouseout', () => { mouse.x = -9999; mouse.y = -9999; });
+
+      if (!reducedMotion) {
+        window.addEventListener('click', e => {
+          for (let i = 0; i < 16; i++) {
+            const a = Math.random() * Math.PI * 2;
+            const v = 1.5 + Math.random() * 3.5;
+            sparks.push({
+              x: e.clientX, y: e.clientY,
+              vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+              life: 1, red: Math.random() < 0.6
+            });
+          }
+        });
+      }
 
       function makeNode() {
         return {
@@ -760,7 +1365,6 @@
           size: 1.5 + Math.random() * 1.5
         };
       }
-
       for (let i = 0; i < NODE_COUNT; i++) nodes.push(makeNode());
 
       function getColors() {
@@ -788,8 +1392,14 @@
         const c = getColors();
         canvas.style.opacity = c.canvasOp;
 
-        // update positions
+        // update positions; nodes near the cursor get a gentle pull
         for (const n of nodes) {
+          const mdx = mouse.x - n.x, mdy = mouse.y - n.y;
+          const mdist = Math.sqrt(mdx*mdx + mdy*mdy);
+          if (mdist < MOUSE_DIST && mdist > 1) {
+            n.x += (mdx / mdist) * 0.25;
+            n.y += (mdy / mdist) * 0.25;
+          }
           n.x += n.vx;
           n.y += n.vy;
           if (n.x < 0 || n.x > canvas.width)  n.vx *= -1;
@@ -817,11 +1427,39 @@
           }
         }
 
+        // lines from nodes to the cursor
+        for (const n of nodes) {
+          const dx = n.x - mouse.x, dy = n.y - mouse.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < MOUSE_DIST) {
+            const alpha = (1 - dist / MOUSE_DIST) * 0.5;
+            ctx.strokeStyle = c.lineRed + alpha.toFixed(3) + ')';
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+
         // draw nodes
         for (const n of nodes) {
           ctx.fillStyle = n.r ? c.nodeRed : c.nodeWhite;
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // click sparks
+        for (let i = sparks.length - 1; i >= 0; i--) {
+          const s = sparks[i];
+          s.x += s.vx; s.y += s.vy;
+          s.vy += 0.06; s.vx *= 0.98;
+          s.life -= 0.022;
+          if (s.life <= 0) { sparks.splice(i, 1); continue; }
+          ctx.fillStyle = (s.red ? c.lineRed : c.lineWhite) + (s.life * 0.9).toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, 1.6 * s.life + 0.4, 0, Math.PI * 2);
           ctx.fill();
         }
 
